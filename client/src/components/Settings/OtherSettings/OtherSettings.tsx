@@ -28,10 +28,11 @@ const OtherSettings = (props: ComponentProps): JSX.Element => {
   const [formData, setFormData] = useState<SettingsForm>({
     customTitle: document.title,
     pinAppsByDefault: 1,
+    pinBookmarksByDefault: 1,
     pinCategoriesByDefault: 1,
     hideHeader: 0,
     hideApps: 0,
-    hideCategories: 0,
+    hideBookmarks: 0,
     useOrdering: 'createdAt',
     appsSameTab: 0,
     bookmarksSameTab: 0,
@@ -46,10 +47,11 @@ const OtherSettings = (props: ComponentProps): JSX.Element => {
     setFormData({
       customTitle: searchConfig('customTitle', 'Flame'),
       pinAppsByDefault: searchConfig('pinAppsByDefault', 1),
+      pinBookmarksByDefault: searchConfig('pinBookmarksByDefault', 1),
       pinCategoriesByDefault: searchConfig('pinCategoriesByDefault', 1),
       hideHeader: searchConfig('hideHeader', 0),
       hideApps: searchConfig('hideApps', 0),
-      hideCategories: searchConfig('hideCategories', 0),
+      hideBookmarks: searchConfig('hideBookmarks', 0),
       useOrdering: searchConfig('useOrdering', 'createdAt'),
       appsSameTab: searchConfig('appsSameTab', 0),
       bookmarksSameTab: searchConfig('bookmarksSameTab', 0),
@@ -119,6 +121,18 @@ const OtherSettings = (props: ComponentProps): JSX.Element => {
           id="pinAppsByDefault"
           name="pinAppsByDefault"
           value={formData.pinAppsByDefault}
+          onChange={(e) => inputChangeHandler(e, true)}
+        >
+          <option value={1}>True</option>
+          <option value={0}>False</option>
+        </select>
+      </InputGroup>
+      <InputGroup>
+        <label htmlFor="pinBookmarksByDefault">Pin new bookmarks by default</label>
+        <select
+          id="pinBookmarksByDefault"
+          name="pinBookmarksByDefault"
+          value={formData.pinBookmarksByDefault}
           onChange={(e) => inputChangeHandler(e, true)}
         >
           <option value={1}>True</option>
@@ -204,11 +218,11 @@ const OtherSettings = (props: ComponentProps): JSX.Element => {
         </select>
       </InputGroup>
       <InputGroup>
-        <label htmlFor="hideCategories">Hide categories</label>
+        <label htmlFor="hideBookmarks">Hide bookmarks</label>
         <select
-          id="hideCategories"
-          name="hideCategories"
-          value={formData.hideCategories}
+          id="hideBookmarks"
+          name="hideBookmarks"
+          value={formData.hideBookmarks}
           onChange={(e) => inputChangeHandler(e, true)}
         >
           <option value={1}>True</option>
