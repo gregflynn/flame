@@ -42,12 +42,16 @@ exports.getCategories = asyncWrapper(async (req, res, next) => {
     where: { key: 'useOrdering' },
   });
 
-  const orderType = useOrdering ? useOrdering.value : 'createdAt';
+  const orderType = useOrdering ? useOrdering.value : "createdAt";
   let categories;
 
-  if (orderType == 'name') {
+  if (orderType == "name") {
     categories = await Category.findAll({
       include: [
+        {
+          model: App,
+          as: 'apps',
+        },
         {
           model: Bookmark,
           as: 'bookmarks',
@@ -58,6 +62,10 @@ exports.getCategories = asyncWrapper(async (req, res, next) => {
   } else {
     categories = await Category.findAll({
       include: [
+        {
+          model: App,
+          as: 'apps',
+        },
         {
           model: Bookmark,
           as: 'bookmarks',
@@ -80,6 +88,10 @@ exports.getCategory = asyncWrapper(async (req, res, next) => {
   const category = await Category.findOne({
     where: { id: req.params.id },
     include: [
+      {
+        model: App,
+        as: 'apps',
+      },
       {
         model: Bookmark,
         as: 'bookmarks',
@@ -135,6 +147,10 @@ exports.deleteCategory = asyncWrapper(async (req, res, next) => {
     where: { id: req.params.id },
     include: [
       {
+        model: App,
+        as: 'apps',
+      },
+      {
         model: Bookmark,
         as: 'bookmarks',
       },
@@ -149,6 +165,12 @@ exports.deleteCategory = asyncWrapper(async (req, res, next) => {
       )
     );
   }
+
+  category.apps.forEach(async (app) => {
+    await App.destroy({
+      where: { id: app.id },
+    });
+  });
 
   category.bookmarks.forEach(async (bookmark) => {
     await Bookmark.destroy({

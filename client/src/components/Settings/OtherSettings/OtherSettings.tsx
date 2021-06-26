@@ -1,34 +1,25 @@
-import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
-
-// Redux
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+
+import { GlobalState, NewNotification, SettingsForm } from '../../../interfaces';
 import {
   createNotification,
-  updateConfig,
+  sortAppCategories,
   sortApps,
-  sortCategories,
+  sortBookmarkCategories,
+  updateConfig,
 } from '../../../store/actions';
-
-// Typescript
-import {
-  GlobalState,
-  NewNotification,
-  SettingsForm,
-} from '../../../interfaces';
-
-// UI
-import InputGroup from '../../UI/Forms/InputGroup/InputGroup';
-import Button from '../../UI/Buttons/Button/Button';
-import SettingsHeadline from '../../UI/Headlines/SettingsHeadline/SettingsHeadline';
-
-// Utils
 import { searchConfig } from '../../../utility';
+import Button from '../../UI/Buttons/Button/Button';
+import InputGroup from '../../UI/Forms/InputGroup/InputGroup';
+import SettingsHeadline from '../../UI/Headlines/SettingsHeadline/SettingsHeadline';
 
 interface ComponentProps {
   createNotification: (notification: NewNotification) => void;
   updateConfig: (formData: SettingsForm) => void;
+  sortAppCategories: () => void;
   sortApps: () => void;
-  sortCategories: () => void;
+  sortBookmarkCategories: () => void;
   loading: boolean;
 }
 
@@ -79,9 +70,10 @@ const OtherSettings = (props: ComponentProps): JSX.Element => {
     // Update local page title
     document.title = formData.customTitle;
 
-    // Sort apps and categories with new settings
+    // Apply new sort settings
+    props.sortAppCategories();
     props.sortApps();
-    props.sortCategories();
+    props.sortBookmarkCategories();
   };
 
   // Input handler
@@ -293,7 +285,8 @@ const actions = {
   createNotification,
   updateConfig,
   sortApps,
-  sortCategories,
+  sortAppCategories,
+  sortBookmarkCategories
 };
 
 export default connect(mapStateToProps, actions)(OtherSettings);

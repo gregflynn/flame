@@ -1,40 +1,19 @@
-// React
-import {
-  useState,
-  SyntheticEvent,
-  Fragment,
-  ChangeEvent,
-  useEffect,
-} from 'react';
-
-// Redux
+import { ChangeEvent, Dispatch, Fragment, SetStateAction, SyntheticEvent, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+
+import { Bookmark, Category, GlobalState, NewBookmark, NewCategory, NewNotification } from '../../../interfaces';
 import {
-  getCategories,
-  addCategory,
   addBookmark,
-  updateCategory,
-  updateBookmark,
+  addBookmarkCategory,
   createNotification,
+  getBookmarkCategories,
+  updateBookmark,
+  updateBookmarkCategory,
 } from '../../../store/actions';
-
-// Typescript
-import {
-  Bookmark,
-  Category,
-  GlobalState,
-  NewBookmark,
-  NewCategory,
-  NewNotification,
-} from '../../../interfaces';
-import { ContentType } from '../Bookmarks';
-
-// UI
-import ModalForm from '../../UI/Forms/ModalForm/ModalForm';
-import InputGroup from '../../UI/Forms/InputGroup/InputGroup';
 import Button from '../../UI/Buttons/Button/Button';
-
-// CSS
+import InputGroup from '../../UI/Forms/InputGroup/InputGroup';
+import ModalForm from '../../UI/Forms/ModalForm/ModalForm';
+import { ContentType } from '../Bookmarks';
 import classes from './BookmarkForm.module.css';
 
 interface ComponentProps {
@@ -43,28 +22,28 @@ interface ComponentProps {
   categories: Category[];
   category?: Category;
   bookmark?: Bookmark;
-  addCategory: (formData: NewCategory) => void;
+  addBookmarkCategory: (formData: NewCategory) => void;
   addBookmark: (formData: NewBookmark | FormData) => void;
-  updateCategory: (id: number, formData: NewCategory) => void;
+  updateBookmarkCategory: (id: number, formData: NewCategory) => void;
   updateBookmark: (
-    id: number,
-    formData: NewBookmark | FormData,
+    id: number, 
+    formData: NewBookmark | FormData, 
     category: {
-      prev: number;
-      curr: number;
-    }
-  ) => void;
+      prev: number,
+      curr: number
+    }) => void;
   createNotification: (notification: NewNotification) => void;
 }
 
 const BookmarkForm = (props: ComponentProps): JSX.Element => {
-  const [useCustomIcon, toggleUseCustomIcon] = useState<boolean>(false);
+  const [useCustomIcon, setUseCustomIcon] = useState<boolean>(false);
   const [customIcon, setCustomIcon] = useState<File | null>(null);
-  const [categoryName, setCategoryName] = useState<NewCategory>({
+  const [categoryData, setCategoryData] = useState<NewCategory>({
     name: '',
-  });
+    type: 'bookmarks'
+  })
 
-  const [formData, setFormData] = useState<NewBookmark>({
+  const [bookmarkData, setBookmarkData] = useState<NewBookmark>({
     name: '',
     url: '',
     categoryId: -1,
@@ -74,23 +53,23 @@ const BookmarkForm = (props: ComponentProps): JSX.Element => {
   // Load category data if provided for editing
   useEffect(() => {
     if (props.category) {
-      setCategoryName({ name: props.category.name });
+      setCategoryData({ name: props.category.name, type: props.category.type });
     } else {
-      setCategoryName({ name: '' });
+      setCategoryData({ name: '', type: "bookmarks" });
     }
   }, [props.category]);
 
   // Load bookmark data if provided for editing
   useEffect(() => {
     if (props.bookmark) {
-      setFormData({
+      setBookmarkData({
         name: props.bookmark.name,
         url: props.bookmark.url,
         categoryId: props.bookmark.categoryId,
         icon: props.bookmark.icon,
       });
     } else {
-      setFormData({
+      setBookmarkData({
         name: '',
         url: '',
         categoryId: -1,
@@ -107,9 +86,9 @@ const BookmarkForm = (props: ComponentProps): JSX.Element => {
       if (customIcon) {
         data.append('icon', customIcon);
       }
-      data.append('name', formData.name);
-      data.append('url', formData.url);
-      data.append('categoryId', `${formData.categoryId}`);
+      data.append('name', bookmarkData.name);
+      data.append('url', bookmarkData.url);
+      data.append('categoryId', `${bookmarkData.categoryId}`);
 
       return data;
     };
@@ -118,11 +97,11 @@ const BookmarkForm = (props: ComponentProps): JSX.Element => {
       // Add new
       if (props.contentType === ContentType.category) {
         // Add category
-        props.addCategory(categoryName);
-        setCategoryName({ name: '' });
+        props.addBookmarkCategory(categoryData);
+        setCategoryData({ name: '', type: 'bookmarks' });
       } else if (props.contentType === ContentType.bookmark) {
         // Add bookmark
-        if (formData.categoryId === -1) {
+        if (bookmarkData.categoryId === -1) {
           props.createNotification({
             title: 'Error',
             message: 'Please select category',
@@ -134,14 +113,14 @@ const BookmarkForm = (props: ComponentProps): JSX.Element => {
           const data = createFormData();
           props.addBookmark(data);
         } else {
-          props.addBookmark(formData);
+          props.addBookmark(bookmarkData);
         }
-
-        setFormData({
+        
+        setBookmarkData({
           name: '',
           url: '',
-          categoryId: formData.categoryId,
-          icon: '',
+          categoryId: bookmarkData.categoryId,
+          icon: ''
         });
 
         // setCustomIcon(null);
@@ -150,24 +129,32 @@ const BookmarkForm = (props: ComponentProps): JSX.Element => {
       // Update
       if (props.contentType === ContentType.category && props.category) {
         // Update category
-        props.updateCategory(props.category.id, categoryName);
-        setCategoryName({ name: '' });
+        props.updateBookmarkCategory(props.category.id, categoryData);
+        setCategoryData({ name: '', type: 'bookmarks' });
       } else if (props.contentType === ContentType.bookmark && props.bookmark) {
         // Update bookmark
         if (customIcon) {
           const data = createFormData();
-          props.updateBookmark(props.bookmark.id, data, {
-            prev: props.bookmark.categoryId,
-            curr: formData.categoryId,
-          });
+          props.updateBookmark(
+            props.bookmark.id,
+            data,
+            {
+              prev: props.bookmark.categoryId,
+              curr: bookmarkData.categoryId
+            }
+          )
         } else {
-          props.updateBookmark(props.bookmark.id, formData, {
-            prev: props.bookmark.categoryId,
-            curr: formData.categoryId,
-          });
+          props.updateBookmark(
+            props.bookmark.id,
+            bookmarkData,
+            {
+              prev: props.bookmark.categoryId,
+              curr: bookmarkData.categoryId
+            }
+          );
         }
 
-        setFormData({
+        setBookmarkData({
           name: '',
           url: '',
           categoryId: -1,
@@ -181,18 +168,16 @@ const BookmarkForm = (props: ComponentProps): JSX.Element => {
     }
   };
 
-  const inputChangeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
+  const inputChangeHandler = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>, setDataFunction: Dispatch<SetStateAction<any>>, data: any): void => {
+    setDataFunction({
+      ...data,
+      [e.target.name]: e.target.value
     });
   };
 
-  const selectChangeHandler = (e: ChangeEvent<HTMLSelectElement>): void => {
-    setFormData({
-      ...formData,
-      categoryId: parseInt(e.target.value),
-    });
+  const toggleUseCustomIcon = (): void => {
+    setUseCustomIcon(!useCustomIcon);
+    setCustomIcon(null);
   };
 
   const fileChangeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -230,8 +215,8 @@ const BookmarkForm = (props: ComponentProps): JSX.Element => {
               id="categoryName"
               placeholder="Social Media"
               required
-              value={categoryName.name}
-              onChange={(e) => setCategoryName({ name: e.target.value })}
+              value={categoryData.name}
+              onChange={(e) => inputChangeHandler(e, setCategoryData, categoryData)}
             />
           </InputGroup>
         </Fragment>
@@ -245,8 +230,8 @@ const BookmarkForm = (props: ComponentProps): JSX.Element => {
               id="name"
               placeholder="Reddit"
               required
-              value={formData.name}
-              onChange={(e) => inputChangeHandler(e)}
+              value={bookmarkData.name}
+              onChange={(e) => inputChangeHandler(e, setBookmarkData, bookmarkData)}
             />
           </InputGroup>
           <InputGroup>
@@ -257,8 +242,8 @@ const BookmarkForm = (props: ComponentProps): JSX.Element => {
               id="url"
               placeholder="reddit.com"
               required
-              value={formData.url}
-              onChange={(e) => inputChangeHandler(e)}
+              value={bookmarkData.url}
+              onChange={(e) => inputChangeHandler(e, setBookmarkData, bookmarkData)}
             />
             <span>
               <a
@@ -277,8 +262,8 @@ const BookmarkForm = (props: ComponentProps): JSX.Element => {
               name="categoryId"
               id="categoryId"
               required
-              onChange={(e) => selectChangeHandler(e)}
-              value={formData.categoryId}
+              value={bookmarkData.categoryId}
+              onChange={(e) => inputChangeHandler(e, setBookmarkData, bookmarkData)}
             >
               <option value={-1}>Select category</option>
               {props.categories.map((category: Category): JSX.Element => {
@@ -295,12 +280,12 @@ const BookmarkForm = (props: ComponentProps): JSX.Element => {
             <InputGroup>
               <label htmlFor="icon">Bookmark Icon (optional)</label>
               <input
-                type="text"
-                name="icon"
-                id="icon"
-                placeholder="book-open-outline"
-                value={formData.icon}
-                onChange={(e) => inputChangeHandler(e)}
+                type='text'
+                name='icon'
+                id='icon'
+                placeholder='book-open-outline'
+                value={bookmarkData.icon}
+                onChange={(e) => inputChangeHandler(e, setBookmarkData, bookmarkData)}
               />
               <span>
                 Use icon name from MDI.
@@ -310,7 +295,7 @@ const BookmarkForm = (props: ComponentProps): JSX.Element => {
                 </a>
               </span>
               <span
-                onClick={() => toggleUseCustomIcon(!useCustomIcon)}
+                onClick={() => toggleUseCustomIcon()}
                 className={classes.Switch}
               >
                 Switch to custom icon upload
@@ -328,10 +313,7 @@ const BookmarkForm = (props: ComponentProps): JSX.Element => {
                 accept=".jpg,.jpeg,.png,.svg"
               />
               <span
-                onClick={() => {
-                  setCustomIcon(null);
-                  toggleUseCustomIcon(!useCustomIcon);
-                }}
+                onClick={() => toggleUseCustomIcon()}
                 className={classes.Switch}
               >
                 Switch to MDI
@@ -352,10 +334,10 @@ const mapStateToProps = (state: GlobalState) => {
 };
 
 const dispatchMap = {
-  getCategories,
-  addCategory,
+  getBookmarkCategories,
+  addBookmarkCategory,
   addBookmark,
-  updateCategory,
+  updateBookmarkCategory,
   updateBookmark,
   createNotification,
 };
