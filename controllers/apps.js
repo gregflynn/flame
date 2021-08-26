@@ -223,7 +223,7 @@ async function retrieveDockerApps(apps, orderType, unpinStoppedApps) {
               url: urls[i] || urls[0],
               icon: icons[i] || 'docker',
               category: category.id,
-              orderId: orders[i] || 1,
+              orderId: orders[i] || 500,
             });
           }
       }
@@ -288,27 +288,14 @@ async function retrieveKubernetesApps(apps, orderType, unpinStoppedApps) {
           for (let i = 0; i < names.length; i++) {            
             const category = categoriesLabels[i] ? categories.find(category => category.name.toUpperCase() === categoriesLabels[i].toUpperCase()) : dockerDefaultCategory;
 
-            dockerApps.push({
+            kubernetesApps.push({
               name: names[i] || names[0],
               url: urls[i] || urls[0],
               icon: icons[i] || 'docker',
               category: category.id,
-              orderId: orders[i] || 1,
+              orderId: orders[i] || 500,
             });
           }
-
-        const app = {
-          name: annotations['flame.pawelmalak/name'],
-          url: annotations['flame.pawelmalak/url'],
-          icon: annotations['flame.pawelmalak/icon'] || 'kubernetes',
-          categoryId: kubernetesDefaultCategory.id,
-          orderId: annotations['flame.pawelmalak/order'] || 1,
-        };
-        if (annotations['flame.pawelmalak/category']) {
-          const category = categories.find(category => category.name.toUpperCase() === annotations['flame.pawelmalak/category'].toUpperCase());
-          app.categoryId = category ? category.id : dockerDefaultCategory.id;
-        }
-        kubernetesApps.push(app);
       }
     }
 
