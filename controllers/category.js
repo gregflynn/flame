@@ -10,6 +10,14 @@ exports.dockerDefaultCategory = {
   name: "Docker",
   type: "apps",
   isPinned: true,
+  orderId: 998,
+};
+
+exports.kubernetesDefaultCategory = {
+  id: -3,
+  name: "Kubernetes",
+  type: "apps",
+  isPinned: true,
   orderId: 999,
 };
 
