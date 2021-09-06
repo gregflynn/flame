@@ -201,7 +201,7 @@ async function retrieveDockerApps(apps, orderType, unpinStoppedApps) {
       order: [[orderType, 'ASC']]
     });
 
-    containers = containers.filter(e => Object.keys(e.Labels).length !== 0);
+    containers = containers.filter((e) => Object.keys(e.Labels).length !== 0);
     const dockerApps = [];
     for (const container of containers) {
       const labels = container.Labels;
@@ -270,7 +270,15 @@ async function retrieveKubernetesApps(apps, orderType, unpinStoppedApps) {
       order: [[orderType, 'ASC']]
     });
 
-    ingresses = ingresses.filter(e => Object.keys(e.metadata.annotations).length !== 0);
+
+    const categories = await Category.findAll({
+      where: {
+        type: 'apps'
+      },
+      order: [[orderType, 'ASC']]
+    });
+
+    ingresses = ingresses.filter((e) => Object.keys(e.metadata.annotations).length !== 0);
     const kubernetesApps = [];
     for (const ingress of ingresses) {
       const annotations = ingress.metadata.annotations;
@@ -286,7 +294,7 @@ async function retrieveKubernetesApps(apps, orderType, unpinStoppedApps) {
           const icons = annotations['flame.pawelmalak/icon'] ? annotations['flame.pawelmalak/icon'].split(';') : [];;
 
           for (let i = 0; i < names.length; i++) {            
-            const category = categoriesLabels[i] ? categories.find(category => category.name.toUpperCase() === categoriesLabels[i].toUpperCase()) : dockerDefaultCategory;
+            const category = categoriesLabels[i] ? categories.find(category => category.name.toUpperCase() === categoriesLabels[i].toUpperCase()) : kubernetesDefaultCategory;
 
             kubernetesApps.push({
               name: names[i] || names[0],
