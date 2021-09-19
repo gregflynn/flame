@@ -217,6 +217,12 @@ async function retrieveDockerApps(apps, orderType, unpinStoppedApps) {
 
           for (let i = 0; i < names.length; i++) {            
             const category = categoriesLabels[i] ? categories.find(category => category.name.toUpperCase() === categoriesLabels[i].toUpperCase()) : dockerDefaultCategory;
+            if (!category) {
+              category = await createNewCategory(categoriesLabels[i]);
+              if (category) {
+                categories.push(category);
+              }
+            }
 
             dockerApps.push({
               name: names[i] || names[0],
@@ -248,6 +254,15 @@ async function retrieveDockerApps(apps, orderType, unpinStoppedApps) {
     }
   }
   return apps;
+}
+
+async function createNewCategory(newCategoryName) {
+  return await Category.create({
+    name: newCategoryName,
+    type: 'apps',
+    isPinned: true,
+    orderId: Number.MAX_SAFE_INTEGER //New category will always be last and can then be re-ordered manually by user
+  });
 }
 
 async function retrieveKubernetesApps(apps, orderType, unpinStoppedApps) {
@@ -295,6 +310,12 @@ async function retrieveKubernetesApps(apps, orderType, unpinStoppedApps) {
 
           for (let i = 0; i < names.length; i++) {            
             const category = categoriesLabels[i] ? categories.find(category => category.name.toUpperCase() === categoriesLabels[i].toUpperCase()) : kubernetesDefaultCategory;
+            if (!category) {
+              category = await createNewCategory(categoriesLabels[i]);
+              if (category) {
+                categories.push(category);
+              }
+            }
 
             kubernetesApps.push({
               name: names[i] || names[0],
