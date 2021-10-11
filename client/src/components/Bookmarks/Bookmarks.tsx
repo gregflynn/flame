@@ -62,7 +62,7 @@ const Bookmarks = (props: ComponentProps): JSX.Element => {
   });
 
   useEffect(() => {
-    if (bookmarks.length === 0) {
+    if (!bookmarks || bookmarks.length === 0) {
       getBookmarks();
     }
   }, [getBookmarks]);
