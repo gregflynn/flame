@@ -1,21 +1,18 @@
 const express = require('express');
 const router = express.Router();
 
+// middleware
+const { auth, requireAuth } = require('../middleware');
+
 const {
-  createPair,
-  getAllPairs,
-  getSinglePair,
-  updateValue,
-  updateValues,
-  deletePair,
-  updateCss,
-  getCss,
+  getCSS,
+  updateCSS,
+  getConfig,
+  updateConfig,
 } = require('../controllers/config');
 
-router.route('/').post(createPair).get(getAllPairs).put(updateValues);
+router.route('/').get(getConfig).put(auth, requireAuth, updateConfig);
 
-router.route('/:key').get(getSinglePair).put(updateValue).delete(deletePair);
-
-router.route('/0/css').get(getCss).put(updateCss);
+router.route('/0/css').get(getCSS).put(auth, requireAuth, updateCSS);
 
 module.exports = router;

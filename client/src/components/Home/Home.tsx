@@ -1,144 +1,121 @@
 import { Fragment, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
 
-import { App, Bookmark, Category, GlobalState } from '../../interfaces';
-import { getAppCategories, getApps, getBookmarkCategories, getBookmarks } from '../../store/actions';
-import { searchConfig } from '../../utility';
-import AppGrid from '../Apps/AppGrid/AppGrid';
-import BookmarkGrid from '../Bookmarks/BookmarkGrid/BookmarkGrid';
-import SearchBar from '../SearchBar/SearchBar';
-import SectionHeadline from '../UI/Headlines/SectionHeadline/SectionHeadline';
-import Icon from '../UI/Icons/Icon/Icon';
+import { Category } from '../../interfaces';
+import { actionCreators } from '../../store';
+import { State } from '../../store/reducers';
+import { escapeRegex } from '../../utility';
+import { AppGrid } from '../Apps/AppGrid/AppGrid';
+import { BookmarkGrid } from '../Bookmarks/BookmarkGrid/BookmarkGrid';
+import { SearchBar } from '../SearchBar/SearchBar';
+import { Icon, Message, SectionHeadline, Spinner } from '../UI';
 import { Container } from '../UI/Layout/Layout';
-import Spinner from '../UI/Spinner/Spinner';
-import WeatherWidget from '../Widgets/WeatherWidget/WeatherWidget';
-import { dateTime } from './functions/dateTime';
-import { greeter } from './functions/greeter';
+import { Header } from './Header/Header';
 import classes from './Home.module.css';
 
-interface ComponentProps {
-  getApps: () => void;
-  getAppCategories: () => void;
-  getBookmarks: () => void;
-  getBookmarkCategories: () => void;
-  appsLoading: boolean;
-  bookmarkCategoriesLoading: boolean;
-  appCategories: Category[];
-  apps: App[];
-  bookmarkCategories: Category[];
-  bookmarks: Bookmark[];
-}
-
-const Home = (props: ComponentProps): JSX.Element => {
+export const Home = (): JSX.Element => {
   const {
-    getAppCategories,
-    getApps,
-    getBookmarkCategories,
-    getBookmarks,
-    appCategories,
-    apps,
-    bookmarkCategories,
-    bookmarks,
-    appsLoading,
-    bookmarkCategoriesLoading,
-  } = props;
+    apps: { categories: appCategories, loading: appsLoading },
+    bookmarks: { categories: bookmarkCategories, loading: bookmarksLoading },
+    config: { config },
+    auth: { isAuthenticated },
+  } = useSelector((state: State) => state);
 
-  const [header, setHeader] = useState({
-    dateTime: dateTime(),
-    greeting: greeter(),
-  });
+  const dispatch = useDispatch();
+  const { getCategories } = bindActionCreators(
+    actionCreators,
+    dispatch
+  );
 
   // Local search query
   const [localSearch, setLocalSearch] = useState<null | string>(null);
+  const [appSearchResult, setAppSearchResult] = useState<null | Category[]>(null);
+  const [bookmarkSearchResult, setBookmarkSearchResult] = useState<
+    null | Category[]
+  >(null);
 
   // Load apps
   useEffect(() => {
-    if (apps.length === 0) {
-      getApps();
+    if (!appCategories.length && !bookmarkCategories.length) {
+      getCategories();
     }
-  }, [getApps]);
-
-  // Load bookmarks
-  useEffect(() => {
-    if (bookmarks.length === 0) {
-      getBookmarks();
-    }
-  }, [getBookmarks]);
-
-  // Refresh greeter and time
-  useEffect(() => {
-    let interval: any;
-
-    // Start interval only when hideHeader is false
-    if (searchConfig("hideHeader", 0) !== 1) {
-      interval = setInterval(() => {
-        setHeader({
-          dateTime: dateTime(),
-          greeting: greeter(),
-        });
-      }, 1000);
-    }
-
-    return () => clearInterval(interval);
   }, []);
 
-  // Search categories
-  const searchInCategories = (query: string, categoriesToSearch: Category[]): Category[] => {
-    const category: Category = {
-      name: "Search Results",
-      type: categoriesToSearch[0]?.type,
-      isPinned: true,
-      apps: categoriesToSearch
-        .map((c: Category) => c.id >= 0 ? c.apps : apps.filter((app: App) => app.categoryId === c.id))
-        .flat()
-        .filter((app: App) => new RegExp(query, 'i').test(app.name)),
-      bookmarks: categoriesToSearch
-      .map((c: Category) => c.id >= 0 ? c.bookmarks : bookmarks.filter((bookmark: Bookmark) => bookmark.categoryId === c.id))
-        .flat()
-        .filter((bookmark: Bookmark) => new RegExp(query, 'i').test(bookmark.name)),
-      id: 0,
-      orderId: 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),        
-    };
+  // Load bookmarks
+  // useEffect(() => {
+  //   if (!bookmarkCategories.length) {
+  //     getBookmarkCategories();
+  //   }
+  // }, []);
 
-    return [category];
-  };
+  useEffect(() => {
+    if (localSearch) {
+      // Search through apps
+      setAppSearchResult([
+        ...appCategories.filter(({ name }) =>
+          new RegExp(escapeRegex(localSearch), 'i').test(name)
+        ),
+      ]);
 
-  const categoryContainsPinnedItems = (category: Category, allItems: App[] | Bookmark[]): boolean => {
-    if (category.apps?.filter((app: App) => app.isPinned).length > 0) return true;
-    if (category.bookmarks?.filter((bookmark: Bookmark) => bookmark.isPinned).length > 0) return true;
-    if (category.id < 0) { // Is a default category
-      return allItems.findIndex((item: App | Bookmark) => item.categoryId === category.id && item.isPinned) >= 0;
+      // Search through bookmarks
+      const appCategory = { ...bookmarkCategories[0] };
+
+      appCategory.name = 'Search Results';
+      appCategory.apps = appCategories
+        .map(({ apps }) => apps)
+        .flat()
+        .filter(({ name }) =>
+          new RegExp(escapeRegex(localSearch), 'i').test(name)
+        );
+
+      setBookmarkSearchResult([appCategory]);
+
+      // Search through bookmarks
+      const bookmarkCategory = { ...bookmarkCategories[0] };
+
+      bookmarkCategory.name = 'Search Results';
+      bookmarkCategory.bookmarks = bookmarkCategories
+        .map(({ bookmarks }) => bookmarks)
+        .flat()
+        .filter(({ name }) =>
+          new RegExp(escapeRegex(localSearch), 'i').test(name)
+        );
+
+      setBookmarkSearchResult([bookmarkCategory]);
+    } else {
+      setAppSearchResult(null);
+      setBookmarkSearchResult(null);
     }
-    return false;
-  };
+  }, [localSearch]);
 
   return (
     <Container>
-      {searchConfig('hideSearch', 0) !== 1 ? (
-        <SearchBar setLocalSearch={setLocalSearch} />
+      {!config.hideSearch ? (
+        <SearchBar
+          setLocalSearch={setLocalSearch}
+          appSearchResult={appSearchResult}
+          bookmarkSearchResult={bookmarkSearchResult}
+        />
       ) : (
         <div></div>
       )}
 
-      {searchConfig('hideHeader', 0) !== 1 ? (
-        <header className={classes.Header}>
-          <p>{header.dateTime}</p>
-          <Link to="/settings" className={classes.SettingsLink}>
-            Go to Settings
-          </Link>
-          <span className={classes.HeaderMain}>
-            <h1>{header.greeting}</h1>
-            <WeatherWidget />
-          </span>
-        </header>
+      <Header />
+
+      {!isAuthenticated &&
+      !appCategories.some((a) => a.isPinned) &&
+      !bookmarkCategories.some((c) => c.isPinned) ? (
+        <Message>
+          Welcome to Flame! Go to <Link to="/settings/app">/settings</Link>,
+          login and start customizing your new homepage
+        </Message>
       ) : (
-        <div></div>
+        <></>
       )}
 
-      {searchConfig('hideApps', 0) !== 1 ? (
+      {!config.hideApps && (isAuthenticated || appCategories.some((a) => a.isPinned)) ? (
         <Fragment>
           <SectionHeadline title="Applications" link="/applications" />
           {appsLoading ? (
@@ -146,16 +123,9 @@ const Home = (props: ComponentProps): JSX.Element => {
           ) : (
             <AppGrid
               categories={
-                  !localSearch
-                    ? appCategories.filter((category: Category) => category.isPinned && categoryContainsPinnedItems(category, apps))
-                    : searchInCategories(localSearch, appCategories)
-              }
-              apps={
-                !localSearch
-                  ? apps.filter((app: App) => app.isPinned)
-                  : apps.filter((app: App) =>
-                      new RegExp(localSearch, 'i').test(app.name)
-                    )
+                !appSearchResult
+                  ? appCategories.filter(({ isPinned }) => isPinned)
+                  : appSearchResult
               }
               totalCategories={appCategories.length}
               searching={!!localSearch}
@@ -164,35 +134,30 @@ const Home = (props: ComponentProps): JSX.Element => {
           <div className={classes.HomeSpace}></div>
         </Fragment>
       ) : (
-        <div></div>
+        <></>
       )}
 
-      {searchConfig('hideBookmarks', 0) !== 1 ? (
+      {!config.hideBookmarks &&
+      (isAuthenticated || bookmarkCategories.some((c) => c.isPinned)) ? (
         <Fragment>
           <SectionHeadline title="Bookmarks" link="/bookmarks" />
-          {bookmarkCategoriesLoading ? (
+          {bookmarksLoading ? (
             <Spinner />
           ) : (
             <BookmarkGrid
               categories={
-                !localSearch
-                  ? bookmarkCategories.filter((category: Category) => category.isPinned && categoryContainsPinnedItems(category, bookmarks))
-                  : searchInCategories(localSearch, bookmarkCategories)
-              }
-              bookmarks={
-                !localSearch
-                  ? bookmarks.filter((bookmark: Bookmark) => bookmark.isPinned)
-                  : bookmarks.filter((bookmark: Bookmark) =>
-                      new RegExp(localSearch, 'i').test(bookmark.name)
-                    )
+                !bookmarkSearchResult
+                  ? bookmarkCategories.filter(({ isPinned }) => isPinned)
+                  : bookmarkSearchResult
               }
               totalCategories={bookmarkCategories.length}
               searching={!!localSearch}
+              fromHomepage={true}
             />
           )}
         </Fragment>
       ) : (
-        <div></div>
+        <></>
       )}
 
       <Link to="/settings" className={classes.SettingsButton}>
@@ -201,16 +166,3 @@ const Home = (props: ComponentProps): JSX.Element => {
     </Container>
   );
 };
-
-const mapStateToProps = (state: GlobalState) => {
-  return {
-    appCategories: state.app.categories,
-    appsLoading: state.app.loading,
-    apps: state.app.apps,
-    bookmarkCategoriesLoading: state.bookmark.loading,
-    bookmarkCategories: state.bookmark.categories,
-    bookmarks: state.bookmark.bookmarks,
-  }
-}
-
-export default connect(mapStateToProps, { getApps, getAppCategories, getBookmarks, getBookmarkCategories })(Home);

@@ -1,26 +1,31 @@
-import { ActionTypes, Action } from '../actions';
+import { Action } from '../actions';
+import { ActionType } from '../action-types';
 import { Theme } from '../../interfaces/Theme';
 
-export interface State {
+interface ThemeState {
   theme: Theme;
 }
 
-const initialState: State = {
+const initialState: ThemeState = {
   theme: {
-    name: 'blues',
+    name: 'tron',
     colors: {
-      background: '#2B2C56',
-      primary: '#EFF1FC',
-      accent: '#6677EB'
-    }
-  }
-}
+      background: '#242B33',
+      primary: '#EFFBFF',
+      accent: '#6EE2FF',
+    },
+  },
+};
 
-const themeReducer = (state = initialState, action: Action) => {
+export const themeReducer = (
+  state: ThemeState = initialState,
+  action: Action
+): ThemeState => {
   switch (action.type) {
-    case ActionTypes.setTheme: return { theme: action.payload };
-    default: return state;
-  }
-}
+    case ActionType.setTheme:
+      return { theme: action.payload };
 
-export default themeReducer;
+    default:
+      return state;
+  }
+};

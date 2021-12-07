@@ -1,64 +1,100 @@
+import { Fragment } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
 import { App, Category } from '../../../interfaces';
-import { iconParser, searchConfig, urlParser } from '../../../utility';
-import Icon from '../../UI/Icons/Icon/Icon';
+import { actionCreators } from '../../../store';
+import { State } from '../../../store/reducers';
+import { iconParser, isImage, isSvg, isUrl, urlParser } from '../../../utility';
+import { Icon } from '../../UI';
 import classes from './AppCard.module.css';
 
-interface ComponentProps {
+interface Props {
   category: Category;
-  apps: App[]
-  pinHandler?: Function;
+  fromHomepage?: boolean;
 }
 
-const AppCard = (props: ComponentProps): JSX.Element => {
+export const AppCard = (props: Props): JSX.Element => {
+  const { category, fromHomepage = false } = props;
+
+  const {
+    config: { config },
+    auth: { isAuthenticated },
+  } = useSelector((state: State) => state);
+
+  const dispatch = useDispatch();
+  const { setEditCategory } = bindActionCreators(actionCreators, dispatch);
+
   return (
     <div className={classes.AppCard}>
-      <h3>{props.category.name}</h3>
-      <div className={classes.Apps}>
-        {props.apps.map((app: App) => {
-          const [displayUrl, redirectUrl] = urlParser(app.url);
+      <h3
+        className={
+          fromHomepage || !isAuthenticated ? '' : classes.AppHeader
+        }
+        onClick={() => {
+          if (!fromHomepage && isAuthenticated) {
+            setEditCategory(category);
+          }
+        }}
+      >
+        {category.name}
+      </h3>
 
-          let iconEl: JSX.Element;
-          const { icon } = app;
-        
-          if (/.(jpeg|jpg|png)$/i.test(icon)) {
-            iconEl = (
-              <img
-                src={`/uploads/${icon}`}
-                alt={`${app.name} icon`}
-                className={classes.CustomIcon}
-              />
-            );
-          } else if (/.(svg)$/i.test(icon)) {
-            iconEl = (
-              <div className={classes.CustomIcon}>
-                <svg
-                  data-src={`/uploads/${icon}`}
-                  fill='var(--color-primary)'
-                  className={classes.CustomIcon}
-                ></svg>
-              </div>
-            );
-          } else {
-            iconEl = <Icon icon={iconParser(icon)} />;
+      <div className={classes.Apps}>
+        {category.apps.map((app: App) => {
+          const redirectUrl = urlParser(app.url)[1];
+
+          let iconEl: JSX.Element = <Fragment></Fragment>;
+
+          if (app.icon) {
+            const { icon, name } = app;
+
+            if (isImage(icon)) {
+              const source = isUrl(icon) ? icon : `/uploads/${icon}`;
+
+              iconEl = (
+                <div className={classes.AppIcon}>
+                  <img
+                    src={source}
+                    alt={`${name} icon`}
+                    className={classes.CustomIcon}
+                  />
+                </div>
+              );
+            } else if (isSvg(icon)) {
+              const source = isUrl(icon) ? icon : `/uploads/${icon}`;
+
+              iconEl = (
+                <div className={classes.AppIcon}>
+                  <svg
+                    data-src={source}
+                    fill="var(--color-primary)"
+                    className={classes.AppIconSvg}
+                  ></svg>
+                </div>
+              );
+            } else {
+              iconEl = (
+                <div className={classes.AppIcon}>
+                  <Icon icon={iconParser(icon)} />
+                </div>
+              );
+            }
           }
 
           return (
             <a
               href={redirectUrl}
-              target={searchConfig('appsSameTab', false) ? '' : '_blank'}
-              rel='noreferrer'
-              key={`app-${app.id}`}>              
-              <div className={classes.AppCardIcon}>{iconEl}</div>
-              <div className={classes.AppCardDetails}>
-                  <h5>{app.name}</h5>
-                  <span>{displayUrl}</span>
-                </div>
+              target={config.appsSameTab ? '' : '_blank'}
+              rel="noreferrer"
+              key={`app-${app.id}`}
+            >
+              {app.icon && iconEl}
+              {app.name}
             </a>
-          )
+          );
         })}
       </div>
     </div>
-  )
-}
-
-export default AppCard;
+  );
+};
