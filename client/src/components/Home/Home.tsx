@@ -43,13 +43,6 @@ export const Home = (): JSX.Element => {
     }
   }, []);
 
-  // Load bookmarks
-  // useEffect(() => {
-  //   if (!bookmarkCategories.length) {
-  //     getBookmarkCategories();
-  //   }
-  // }, []);
-
   useEffect(() => {
     if (localSearch) {
       // Search through apps

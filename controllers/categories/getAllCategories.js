@@ -4,12 +4,16 @@ const App = require('../../models/App');
 const Bookmark = require('../../models/Bookmark');
 const { Sequelize } = require('sequelize');
 const loadConfig = require('../../utils/loadConfig');
+const getAllApps = require('../apps/getAllApps');
 
 // @desc      Get all categories
 // @route     GET /api/categories
 // @access    Public
 const getAllCategories = asyncWrapper(async (req, res, next) => {
   const { useOrdering: orderType } = await loadConfig();
+
+  // Load apps to create apps from integrations (Docker, Kubernetes, etc.)
+  await getAllApps(req, res, next);
 
   let categories;
   let output;
