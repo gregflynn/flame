@@ -193,7 +193,7 @@ const BookmarkForm = (props: ComponentProps): JSX.Element => {
             <label htmlFor="categoryName">Category Name</label>
             <input
               type="text"
-              name="categoryName"
+              name="name"
               id="categoryName"
               placeholder="Social Media"
               required
