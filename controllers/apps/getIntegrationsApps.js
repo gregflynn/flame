@@ -6,28 +6,24 @@ const loadConfig = require('../../utils/loadConfig');
 const { useKubernetes, useDocker } = require('./docker');
 
 // @desc      Get all apps
-// @route     GET /api/apps
+// @route     GET /api/integrationsApps
 // @access    Public
-const getAllApps = asyncWrapper(async (req, res, next) => {
+const getIntegrationsApps = asyncWrapper(async (req, res, next) => {
   const {
-    useOrdering: orderType
+    useOrdering: orderType,
+    dockerApps: useDockerAPI,
+    kubernetesApps: useKubernetesAPI,
   } = await loadConfig();
 
-  // Load apps to create/update apps from integrations (Docker, Kubernetes, etc.)
-  await initIntegrationsApps();
+  let apps;
 
-  // apps visibility
-  const where = req.isAuthenticated ? {} : { isPublic: true };
+  if (useDockerAPI) {
+    await useDocker(apps);
+  }
 
-  const order =
-    orderType == 'name'
-      ? [[Sequelize.fn('lower', Sequelize.col('name')), 'ASC']]
-      : [[orderType, 'ASC']];
-
-  apps = await App.findAll({
-    order,
-    where,
-  });
+  if (useKubernetesAPI) {
+    await useKubernetes(apps);
+  }
 
   if (process.env.NODE_ENV === 'production') {
     // Set header to fetch containers info every time
@@ -43,4 +39,4 @@ const getAllApps = asyncWrapper(async (req, res, next) => {
   });
 });
 
-module.exports = getAllApps;
+module.exports = getIntegrationsApps;

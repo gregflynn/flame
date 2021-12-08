@@ -1,6 +1,8 @@
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { Category } from '../../../interfaces';
+import { State } from '../../../store/reducers';
 import { Message } from '../../UI';
 import { BookmarkCard } from '../BookmarkCard/BookmarkCard';
 import classes from './BookmarkGrid.module.css';
@@ -20,6 +22,10 @@ export const BookmarkGrid = (props: Props): JSX.Element => {
     fromHomepage = false,
   } = props;
 
+  const {
+    config: { config }
+  } = useSelector((state: State) => state);
+
   let bookmarks: JSX.Element;
 
   if (categories.length) {
@@ -28,7 +34,7 @@ export const BookmarkGrid = (props: Props): JSX.Element => {
     } else {
       bookmarks = (
         <div className={classes.BookmarkGrid}>
-          {categories.map(
+          {categories.filter((category : Category) => !config.hideEmptyCategories || category.apps.length > 0).map(
             (category: Category): JSX.Element => (
               <BookmarkCard
                 category={category}

@@ -67,7 +67,7 @@ const useKubernetes = async (apps) => {
         const icons = annotations['flame.pawelmalak/icon'] ? annotations['flame.pawelmalak/icon'].split(';') : [];
 
         for (let i = 0; i < names.length; i++) {            
-          const category = categoriesLabels[i] ? categories.find(category => category.name.toUpperCase() === categoriesLabels[i].toUpperCase()) : kubernetesDefaultCategory;
+          let category = categoriesLabels[i] ? categories.find(category => category.name.toUpperCase() === categoriesLabels[i].toUpperCase()) : kubernetesDefaultCategory;
           if (!category) {
             category = await createNewCategory(categoriesLabels[i]);
             if (category) {
@@ -81,7 +81,7 @@ const useKubernetes = async (apps) => {
             name: names[i] || names[0],
             url: urls[i] || urls[0],
             icon: icons[i] || 'kubernetes',
-            category: category.id,
+            categoryId: category.id,
             orderId: orders[i] || 500,
           });
         }

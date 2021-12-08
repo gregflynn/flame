@@ -8,6 +8,7 @@ export const otherSettingsTemplate: OtherSettingsForm = {
   hideHeader: false,
   hideApps: false,
   hideBookmarks: false,
+  hideEmptyCategories: true,
   useOrdering: 'createdAt',
   appsSameTab: false,
   bookmarksSameTab: false,

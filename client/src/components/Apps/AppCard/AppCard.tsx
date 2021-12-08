@@ -42,7 +42,7 @@ export const AppCard = (props: Props): JSX.Element => {
 
       <div className={classes.Apps}>
         {category.apps.map((app: App) => {
-          const redirectUrl = urlParser(app.url)[1];
+          const [displayUrl, redirectUrl] = urlParser(app.url);
 
           let iconEl: JSX.Element = <Fragment></Fragment>;
 
@@ -89,8 +89,11 @@ export const AppCard = (props: Props): JSX.Element => {
               rel="noreferrer"
               key={`app-${app.id}`}
             >
-              {app.icon && iconEl}
-              {app.name}
+              {app.icon && iconEl}              
+              <div className={classes.AppCardDetails}>
+                  <h5>{app.name}</h5>
+                  <span>{displayUrl}</span>
+                </div>
             </a>
           );
         })}

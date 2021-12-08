@@ -1,6 +1,8 @@
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { Category } from '../../../interfaces';
+import { State } from '../../../store/reducers';
 import { Message } from '../../UI';
 import { AppCard } from '../AppCard/AppCard';
 import classes from './AppGrid.module.css';
@@ -20,6 +22,10 @@ export const AppGrid = (props: Props): JSX.Element => {
     fromHomepage = false,
   } = props;
 
+  const {
+    config: { config }
+  } = useSelector((state: State) => state);
+
   let apps: JSX.Element;
 
   if (categories.length) {
@@ -28,7 +34,7 @@ export const AppGrid = (props: Props): JSX.Element => {
     } else {
       apps = (
         <div className={classes.AppGrid}>
-          {categories.map(
+          {categories.filter((category : Category) => !config.hideEmptyCategories || category.apps.length > 0).map(
             (category: Category): JSX.Element => (
               <AppCard
                 category={category}

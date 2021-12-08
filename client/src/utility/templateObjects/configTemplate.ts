@@ -16,6 +16,7 @@ export const configTemplate: Config = {
   searchSameTab: false,
   hideApps: false,
   hideBookmarks: false,
+  hideEmptyCategories: true,
   hideSearch: false,
   defaultSearchProvider: 'l',
   dockerApps: false,

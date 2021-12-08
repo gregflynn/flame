@@ -16,6 +16,7 @@ export interface Config {
   searchSameTab: boolean;
   hideApps: boolean;
   hideBookmarks: boolean;
+  hideEmptyCategories: boolean;
   hideSearch: boolean;
   defaultSearchProvider: string;
   dockerApps: boolean;

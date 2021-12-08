@@ -4,5 +4,5 @@ module.exports = {
   deleteApp: require('./deleteApp'),
   updateApp: require('./updateApp'),
   reorderApps: require('./reorderApps'),
-  getAllApps: require('./getAllApps').getAllApps,
+  getAllApps: require('./getAllApps'),
 };

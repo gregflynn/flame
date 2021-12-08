@@ -30,15 +30,8 @@ export const Bookmarks = (props: Props): JSX.Element => {
 
   // Get Redux action creators
   const dispatch = useDispatch();
-  const { getCategories, setEditCategory, setEditBookmark } =
+  const { setEditCategory, setEditBookmark } =
     bindActionCreators(actionCreators, dispatch);
-
-  // Load categories if array is empty
-  useEffect(() => {
-    if (!categories.length) {
-      getCategories();
-    }
-  }, []);
 
   // Form
   const [modalIsOpen, setModalIsOpen] = useState(false);

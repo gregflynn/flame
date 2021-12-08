@@ -23,6 +23,7 @@ export interface OtherSettingsForm {
   hideHeader: boolean;
   hideApps: boolean;
   hideBookmarks: boolean;
+  hideEmptyCategories: boolean;
   useOrdering: string;
   appsSameTab: boolean;
   bookmarksSameTab: boolean;

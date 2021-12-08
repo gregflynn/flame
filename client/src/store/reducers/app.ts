@@ -5,8 +5,6 @@ import { Action } from '../actions';
 import { categoriesReducer, CategoriesState } from './category';
 
 interface AppsState extends CategoriesState {
-  loading: boolean;
-  errors: string | undefined;
   categories: Category[];
   categoryInEdit: Category | null;
   appInEdit: App | null;

@@ -115,7 +115,7 @@ const useDocker = async (apps) => {
         const icons = labels['flame.icon'] ? labels['flame.icon'].split(';') : [];
 
         for (let i = 0; i < names.length; i++) {     
-          const category = categoriesLabels[i] ? categories.find(category => category.name.toUpperCase() === categoriesLabels[i].toUpperCase()) : dockerDefaultCategory;
+          let category = categoriesLabels[i] ? categories.find(category => category.name.toUpperCase() === categoriesLabels[i].toUpperCase()) : dockerDefaultCategory;
           if (!category) {
             category = await createNewCategory(categoriesLabels[i]);
             if (category) {
@@ -129,7 +129,7 @@ const useDocker = async (apps) => {
             name: names[i] || names[0],
             url: urls[i] || urls[0],
             icon: icons[i] || 'docker',
-            category: category.id,
+            categoryId: category.id,
             orderId: orders[i] || 500,
           });
         }
@@ -141,7 +141,6 @@ const useDocker = async (apps) => {
         await app.update({ isPinned: false });
       }
     }
-
     for (const item of dockerApps) {
       // If app already exists, update it
       if (apps.some((app) => app.name === item.name)) {

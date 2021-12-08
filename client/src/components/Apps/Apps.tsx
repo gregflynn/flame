@@ -30,15 +30,8 @@ export const Apps = (props: Props): JSX.Element => {
 
   // Get Redux action creators
   const dispatch = useDispatch();
-  const { getCategories, setEditCategory, setEditApp } =
+  const { setEditCategory, setEditApp } =
     bindActionCreators(actionCreators, dispatch);
-
-  // Load categories if array is empty
-  useEffect(() => {
-    if (!categories.length) {
-      getCategories();
-    }
-  }, []);
 
   // Form
   const [modalIsOpen, setModalIsOpen] = useState(false);
