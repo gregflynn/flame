@@ -15,15 +15,7 @@ const getAllApps = asyncWrapper(async (req, res, next) => {
     kubernetesApps: useKubernetesAPI,
   } = await loadConfig();
 
-  let apps;
-
-  if (useDockerAPI) {
-    await useDocker(apps);
-  }
-
-  if (useKubernetesAPI) {
-    await useKubernetes(apps);
-  }
+  let apps = await loadIntegrationsApps();
 
   // apps visibility
   const where = req.isAuthenticated ? {} : { isPublic: true };
@@ -52,4 +44,26 @@ const getAllApps = asyncWrapper(async (req, res, next) => {
   });
 });
 
-module.exports = getAllApps;
+const loadIntegrationsApps = asyncWrapper(async () => {
+  const {
+    dockerApps: useDockerAPI,
+    kubernetesApps: useKubernetesAPI,
+  } = await loadConfig();
+  
+  let apps;
+
+  if (useDockerAPI) {
+    await useDocker(apps);
+  }
+
+  if (useKubernetesAPI) {
+    await useKubernetes(apps);
+  }
+
+  return apps;
+});
+
+module.exports = {
+  getAllApps,
+  loadIntegrationsApps
+}

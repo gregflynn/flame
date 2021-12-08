@@ -3,8 +3,9 @@ const axios = require('axios');
 const Logger = require('../../../utils/Logger');
 const logger = new Logger();
 const loadConfig = require('../../../utils/loadConfig');
+const Category = require('../../../models/Category');
 
-dockerDefaultCategory = {
+const dockerDefaultCategory = {
   id: -2,
   name: 'Docker',
   type: 'apps',
@@ -54,6 +55,17 @@ const useDocker = async (apps) => {
     containers = containers.filter((e) => Object.keys(e.Labels).length !== 0);
 
     const dockerApps = [];
+
+    const categories = await Category.findAll({
+      where: {
+        type: 'apps'
+      },
+      order: [[orderType, 'ASC']]
+    });
+
+    if (!categories.find(category => category.id === dockerDefaultCategory.id)) {
+      categories.push(await Category.create(dockerDefaultCategory));
+    }
 
     for (const container of containers) {
       let labels = container.Labels;

@@ -3,6 +3,7 @@ const k8s = require('@kubernetes/client-node');
 const Logger = require('../../../utils/Logger');
 const logger = new Logger();
 const loadConfig = require('../../../utils/loadConfig');
+const Category = require('../../../models/Category');
 
 const kubernetesDefaultCategory = {
   id: -3,
@@ -38,6 +39,17 @@ const useKubernetes = async (apps) => {
     );
 
     const kubernetesApps = [];
+
+    const categories = await Category.findAll({
+      where: {
+        type: 'apps'
+      },
+      order: [[orderType, 'ASC']]
+    });
+
+    if (!categories.find(category => category.id === kubernetesDefaultCategory.id)) {
+      categories.push(await Category.create(kubernetesDefaultCategory));
+    }
 
     for (const ingress of ingresses) {
       const annotations = ingress.metadata.annotations;
