@@ -26,15 +26,19 @@ export const BookmarkGrid = (props: Props): JSX.Element => {
     config: { config }
   } = useSelector((state: State) => state);
 
+  const shouldBeShown = (category: Category) => {
+    return !config.hideEmptyCategories || category.bookmarks.length > 0 || !fromHomepage
+  }
+
   let bookmarks: JSX.Element;
 
-  if (categories.length) {
+  if (categories.length && categories.some(shouldBeShown)) {
     if (searching && !categories[0].bookmarks.length) {
       bookmarks = <Message>No bookmarks match your search criteria</Message>;
     } else {
       bookmarks = (
         <div className={classes.BookmarkGrid}>
-          {categories.filter((category : Category) => !config.hideEmptyCategories || category.apps.length > 0).map(
+          {categories.filter(shouldBeShown).map(
             (category: Category): JSX.Element => (
               <BookmarkCard
                 category={category}
@@ -47,7 +51,7 @@ export const BookmarkGrid = (props: Props): JSX.Element => {
       );
     }
   } else {
-    if (totalCategories) {
+    if (totalCategories && !config.hideEmptyCategories) {
       bookmarks = (
         <Message>
           There are no pinned categories. You can pin them from the{' '}

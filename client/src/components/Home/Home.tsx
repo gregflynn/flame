@@ -36,7 +36,7 @@ export const Home = (): JSX.Element => {
     null | Category[]
   >(null);
 
-  // Load apps
+  // Load apps and bookmarks
   useEffect(() => {
     if (!appCategories.length && !bookmarkCategories.length) {
       getCategories();
@@ -59,11 +59,12 @@ export const Home = (): JSX.Element => {
       appCategory.apps = appCategories
         .map(({ apps }) => apps)
         .flat()
-        .filter(({ name }) =>
-          new RegExp(escapeRegex(localSearch), 'i').test(name)
+        .filter(({ name, url }) =>
+          new RegExp(escapeRegex(localSearch), 'i').test(name) || 
+          new RegExp(escapeRegex(localSearch), 'i').test(url)
         );
 
-      setBookmarkSearchResult([appCategory]);
+        setAppSearchResult([appCategory]);
 
       // Search through bookmarks
       const bookmarkCategory = { ...bookmarkCategories[0] };
@@ -72,8 +73,9 @@ export const Home = (): JSX.Element => {
       bookmarkCategory.bookmarks = bookmarkCategories
         .map(({ bookmarks }) => bookmarks)
         .flat()
-        .filter(({ name }) =>
-          new RegExp(escapeRegex(localSearch), 'i').test(name)
+        .filter(({ name, url }) =>
+          new RegExp(escapeRegex(localSearch), 'i').test(name) || 
+          new RegExp(escapeRegex(localSearch), 'i').test(url)
         );
 
       setBookmarkSearchResult([bookmarkCategory]);
@@ -122,6 +124,7 @@ export const Home = (): JSX.Element => {
               }
               totalCategories={appCategories.length}
               searching={!!localSearch}
+              fromHomepage={true}
             />
           )}
           <div className={classes.HomeSpace}></div>
@@ -130,8 +133,7 @@ export const Home = (): JSX.Element => {
         <></>
       )}
 
-      {!config.hideBookmarks &&
-      (isAuthenticated || bookmarkCategories.some((c) => c.isPinned)) ? (
+      {!config.hideBookmarks && (isAuthenticated || bookmarkCategories.some((c) => c.isPinned)) ? (
         <Fragment>
           <SectionHeadline title="Bookmarks" link="/bookmarks" />
           {bookmarksLoading ? (
