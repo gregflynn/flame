@@ -1,22 +1,47 @@
 import { Fragment } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import { Bookmark, Category } from '../../../interfaces';
-import { iconParser, searchConfig, urlParser } from '../../../utility';
-import Icon from '../../UI/Icons/Icon/Icon';
+import { actionCreators } from '../../../store';
+import { State } from '../../../store/reducers';
+import { iconParser, isImage, isSvg, isUrl, urlParser } from '../../../utility';
+import { Icon } from '../../UI';
 import classes from './BookmarkCard.module.css';
 
-interface ComponentProps {
+interface Props {
   category: Category;
-  bookmarks: Bookmark[];
-  pinHandler?: Function;
+  fromHomepage?: boolean;
 }
 
-const BookmarkCard = (props: ComponentProps): JSX.Element => {
+export const BookmarkCard = (props: Props): JSX.Element => {
+  const { category, fromHomepage = false } = props;
+
+  const {
+    config: { config },
+    auth: { isAuthenticated },
+  } = useSelector((state: State) => state);
+
+  const dispatch = useDispatch();
+  const { setEditCategory } = bindActionCreators(actionCreators, dispatch);
+
   return (
     <div className={classes.BookmarkCard}>
-      <h3>{props.category.name}</h3>
+      <h3
+        className={
+          fromHomepage || !isAuthenticated ? '' : classes.BookmarkHeader
+        }
+        onClick={() => {
+          if (!fromHomepage && isAuthenticated) {
+            setEditCategory(category);
+          }
+        }}
+      >
+        {category.name}
+      </h3>
+
       <div className={classes.Bookmarks}>
-        {props.bookmarks.map((bookmark: Bookmark) => {
+        {category.bookmarks.map((bookmark: Bookmark) => {
           const redirectUrl = urlParser(bookmark.url)[1];
 
           let iconEl: JSX.Element = <Fragment></Fragment>;
@@ -24,21 +49,25 @@ const BookmarkCard = (props: ComponentProps): JSX.Element => {
           if (bookmark.icon) {
             const { icon, name } = bookmark;
 
-            if (/.(jpeg|jpg|png)$/i.test(icon)) {
+            if (isImage(icon)) {
+              const source = isUrl(icon) ? icon : `/uploads/${icon}`;
+
               iconEl = (
                 <div className={classes.BookmarkIcon}>
                   <img
-                    src={`/uploads/${icon}`}
+                    src={source}
                     alt={`${name} icon`}
                     className={classes.CustomIcon}
                   />
                 </div>
               );
-            } else if (/.(svg)$/i.test(icon)) {
+            } else if (isSvg(icon)) {
+              const source = isUrl(icon) ? icon : `/uploads/${icon}`;
+
               iconEl = (
                 <div className={classes.BookmarkIcon}>
                   <svg
-                    data-src={`/uploads/${icon}`}
+                    data-src={source}
                     fill="var(--color-primary)"
                     className={classes.BookmarkIconSvg}
                   ></svg>
@@ -56,7 +85,7 @@ const BookmarkCard = (props: ComponentProps): JSX.Element => {
           return (
             <a
               href={redirectUrl}
-              target={searchConfig('bookmarksSameTab', false) ? '' : '_blank'}
+              target={config.bookmarksSameTab ? '' : '_blank'}
               rel="noreferrer"
               key={`bookmark-${bookmark.id}`}
             >
@@ -69,5 +98,3 @@ const BookmarkCard = (props: ComponentProps): JSX.Element => {
     </div>
   );
 };
-
-export default BookmarkCard;

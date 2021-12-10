@@ -1,25 +1,18 @@
 import { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
 
-import { App, Category, GlobalState } from '../../interfaces';
-import { getAppCategories, getApps } from '../../store/actions';
-import ActionButton from '../UI/Buttons/ActionButton/ActionButton';
-import Headline from '../UI/Headlines/Headline/Headline';
-import { Container } from '../UI/Layout/Layout';
-import Modal from '../UI/Modal/Modal';
-import Spinner from '../UI/Spinner/Spinner';
-import AppForm from './AppForm/AppForm';
-import AppGrid from './AppGrid/AppGrid';
+import { App, Category } from '../../interfaces';
+import { actionCreators } from '../../store';
+import { State } from '../../store/reducers';
+import { ActionButton, Container, Headline, Message, Modal, Spinner } from '../UI';
+import { AppGrid } from './AppGrid/AppGrid';
 import classes from './Apps.module.css';
-import AppTable from './AppTable/AppTable';
+import { Form } from './Form/Form';
+import { Table } from './Table/Table';
 
-interface ComponentProps {
-  loading: boolean;
-  categories: Category[];
-  getAppCategories: () => void;
-  apps: App[];
-  getApps: () => void;
+interface Props {
   searching: boolean;
 }
 
@@ -28,131 +21,152 @@ export enum ContentType {
   app,
 }
 
-const Apps = (props: ComponentProps): JSX.Element => {
-  const { apps, getApps, getAppCategories, categories, loading, searching = false } = props;
+export const Apps = (props: Props): JSX.Element => {
+  // Get Redux state
+  const {
+    apps: { loading, categories, categoryInEdit },
+    auth: { isAuthenticated },
+  } = useSelector((state: State) => state);
 
+  // Get Redux action creators
+  const dispatch = useDispatch();
+  const { setEditCategory, setEditApp } =
+    bindActionCreators(actionCreators, dispatch);
+
+  // Form
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [formContentType, setFormContentType] = useState(ContentType.category);
-  const [isInEdit, setIsInEdit] = useState(false);
+  const [isInUpdate, setIsInUpdate] = useState(false);
+
+  // Table
+  const [showTable, setShowTable] = useState(false);
   const [tableContentType, setTableContentType] = useState(
     ContentType.category
   );
-  const [isInUpdate, setIsInUpdate] = useState(false);
-  const [categoryInUpdate, setCategoryInUpdate] = useState<Category>({
-    name: "",
-    id: -1,
-    isPinned: false,
-    orderId: 0,
-    type: "apps",
-    apps: [],
-    bookmarks: [],
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  });
-  const [appInUpdate, setAppInUpdate] = useState<App>({
-    name: "string",
-    url: "string",
-    categoryId: -1,
-    icon: "string",
-    isPinned: false,
-    orderId: 0,
-    id: 0,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  });
+
+  // Observe if user is authenticated -> set default view (grid) if not
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setShowTable(false);
+      setModalIsOpen(false);
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
-    if (apps.length === 0) {
-      getApps();
+    if (categoryInEdit && !modalIsOpen) {
+      setTableContentType(ContentType.app);
+      setShowTable(true);
     }
-  }, [getApps]);
+  }, [categoryInEdit]);
 
   useEffect(() => {
-    if (categories.length === 0) {
-      getAppCategories();
-    }
-  }, [getAppCategories]);
+    setShowTable(false);
+    setEditCategory(null);
+  }, []);
 
+  // Form actions
   const toggleModal = (): void => {
     setModalIsOpen(!modalIsOpen);
   };
 
-  const addActionHandler = (contentType: ContentType) => {
+  const openFormForAdding = (contentType: ContentType) => {
     setFormContentType(contentType);
     setIsInUpdate(false);
     toggleModal();
   };
 
-  const editActionHandler = (contentType: ContentType) => {
-    // We"re in the edit mode and the same button was clicked - go back to list
-    if (isInEdit && contentType === tableContentType) {
-      setIsInEdit(false);
+  const openFormForUpdating = (data: Category | App): void => {
+    setIsInUpdate(true);
+
+    const instanceOfCategory = (object: any): object is Category => {
+      return 'apps' in object;
+    };
+
+    if (instanceOfCategory(data)) {
+      setFormContentType(ContentType.category);
+      setEditCategory(data);
     } else {
-      setIsInEdit(true);
+      setFormContentType(ContentType.app);
+      setEditApp(data);
+    }
+
+    toggleModal();
+  };
+
+  // Table actions
+  const showTableForEditing = (contentType: ContentType) => {
+    // We're in the edit mode and the same button was clicked - go back to list
+    if (showTable && contentType === tableContentType) {
+      setEditCategory(null);
+      setShowTable(false);
+    } else {
+      setShowTable(true);
       setTableContentType(contentType);
     }
   };
 
-  const instanceOfCategory = (object: any): object is Category => {
-    return !("categoryId" in object);
-  };
-
-  const goToUpdateMode = (data: Category | App): void => {
-    setIsInUpdate(true);
-    if (instanceOfCategory(data)) {
-      setFormContentType(ContentType.category);
-      setCategoryInUpdate(data);
-    } else {
-      setFormContentType(ContentType.app);
-      setAppInUpdate(data);
-    }
-    toggleModal();
+  const finishEditing = () => {
+    setShowTable(false);
+    setEditCategory(null);
   };
 
   return (
     <Container>
       <Modal isOpen={modalIsOpen} setIsOpen={toggleModal}>
-        {!isInUpdate ? (
-          <AppForm modalHandler={toggleModal} contentType={formContentType} />
-        ) : (
-          formContentType === ContentType.category ? (
-            <AppForm modalHandler={toggleModal} contentType={formContentType} category={categoryInUpdate} />
-          ) : (
-            <AppForm modalHandler={toggleModal} contentType={formContentType} app={appInUpdate} />
-          )
-        )}
+        <Form
+          modalHandler={toggleModal}
+          contentType={formContentType}
+          inUpdate={isInUpdate}
+        />
       </Modal>
 
-      <Headline
-        title="All Applications"
-        subtitle={(<Link to="/">Go back</Link>)}
-      />
+      <Headline title="All Apps" subtitle={<Link to="/">Go back</Link>} />
 
-      <div className={classes.ActionsContainer}>
-        <ActionButton name="Add Category" icon="mdiPlusBox" handler={() => addActionHandler(ContentType.category)} />
-        <ActionButton name="Add App" icon="mdiPlusBox" handler={() => addActionHandler(ContentType.app)} />
-        <ActionButton name="Edit Categories" icon="mdiPencil" handler={() => editActionHandler(ContentType.category)} />
-        <ActionButton name="Edit Apps" icon="mdiPencil" handler={() => editActionHandler(ContentType.app)} />
-      </div>
+      {isAuthenticated && (
+        <div className={classes.ActionsContainer}>
+          <ActionButton
+            name="Add Category"
+            icon="mdiPlusBox"
+            handler={() => openFormForAdding(ContentType.category)}
+          />
+          <ActionButton
+            name="Add App"
+            icon="mdiPlusBox"
+            handler={() => openFormForAdding(ContentType.app)}
+          />
+          <ActionButton
+            name="Edit Categories"
+            icon="mdiPencil"
+            handler={() => showTableForEditing(ContentType.category)}
+          />
+          {showTable && tableContentType === ContentType.app && (
+            <ActionButton
+              name="Finish Editing"
+              icon="mdiPencil"
+              handler={finishEditing}
+            />
+          )}
+        </div>
+      )}
+
+      {categories.length && isAuthenticated && !showTable ? (
+        <Message isPrimary={false}>
+          Click on category name to edit its apps
+        </Message>
+      ) : (
+        <></>
+      )}
 
       {loading ? (
         <Spinner />
-      ) : (!isInEdit ? (
-            <AppGrid categories={categories} apps={apps} searching />
-          ) : (
-            <AppTable contentType={tableContentType} categories={categories} apps={apps} updateHandler={goToUpdateMode} />
-          )
+      ) : !showTable ? (
+        <AppGrid categories={categories} searching={props.searching} />
+      ) : (
+        <Table
+          contentType={tableContentType}
+          openFormForUpdating={openFormForUpdating}
+        />
       )}
     </Container>
   );
 };
-
-const mapStateToProps = (state: GlobalState) => {
-  return {
-    loading: state.app.loading,
-    categories: state.app.categories,
-    apps: state.app.apps,
-  };
-};
-
-export default connect(mapStateToProps, { getApps, getAppCategories })(Apps);

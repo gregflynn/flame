@@ -1,88 +1,34 @@
 {
-  "config": [
-    {
-      "key": "WEATHER_API_KEY",
-      "value": ""
-    },
-    {
-      "key": "lat",
-      "value": 0
-    },
-    {
-      "key": "long",
-      "value": 0
-    },
-    {
-      "key": "isCelsius",
-      "value": true
-    },
-    {
-      "key": "customTitle",
-      "value": "Flame"
-    },
-    {
-      "key": "pinAppsByDefault",
-      "value": true
-    },
-    {
-      "key": "pinBookmarksByDefault",
-      "value": true
-    },
-    {
-      "key": "pinCategoriesByDefault",
-      "value": true
-    },
-    {
-      "key": "hideHeader",
-      "value": false
-    },
-    {
-      "key": "useOrdering",
-      "value": "createdAt"
-    },
-    {
-      "key": "appsSameTab",
-      "value": false
-    },
-    {
-      "key": "bookmarksSameTab",
-      "value": false
-    },
-    {
-      "key": "searchSameTab",
-      "value": false
-    },
-    {
-      "key": "hideApps",
-      "value": false
-    },
-    {
-      "key": "hideBookmarks",
-      "value": false
-    },
-    {
-      "key": "hideSearch",
-      "value": false
-    },
-    {
-      "key": "defaultSearchProvider",
-      "value": "l"
-    },
-    {
-      "key": "dockerApps",
-      "value": false
-    },
-    {
-      "key": "dockerHost",
-      "value": "localhost"
-    },
-    {
-      "key": "kubernetesApps",
-      "value": false
-    },
-    {
-      "key": "unpinStoppedApps",
-      "value": false
-    }
-  ]
+  "WEATHER_API_KEY": "",
+  "lat": 0,
+  "long": 0,
+  "isCelsius": true,
+  "customTitle": "Flame",
+  "pinAppsByDefault": true,
+  "pinBookmarksByDefault": true,
+  "pinCategoriesByDefault": true,
+  "hideHeader": false,
+  "useOrdering": "createdAt",
+  "appsSameTab": false,
+  "bookmarksSameTab": false,
+  "searchSameTab": false,
+  "hideApps": false,
+  "hideBookmarks": false,
+  "hideEmptyCategories": true,
+  "hideSearch": false,
+  "defaultSearchProvider": "l",
+  "dockerApps": false,
+  "dockerHost": "localhost",
+  "kubernetesApps": false,
+  "unpinStoppedApps": false,
+  "useAmericanDate": false,
+  "disableAutofocus": false,
+  "greetingsSchema": "Good evening!;Good afternoon!;Good morning!;Good night!",
+  "daySchema": "Sunday;Monday;Tuesday;Wednesday;Thursday;Friday;Saturday",
+  "monthSchema": "January;February;March;April;May;June;July;August;September;October;November;December",
+  "showTime": false,
+  "defaultTheme": "tron",
+  "isKilometer": true,
+  "weatherData": "cloud",
+  "hideDate": false
 }

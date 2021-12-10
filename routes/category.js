@@ -1,32 +1,29 @@
 const express = require('express');
 const router = express.Router();
 
+// middleware
+const { auth, requireAuth } = require('../middleware');
+
 const {
   createCategory,
-  getCategories,
-  getCategory,
+  getAllCategories,
+  getSingleCategory,
   updateCategory,
   deleteCategory,
-  reorderCategories
-} = require('../controllers/category');
+  reorderCategories,
+} = require('../controllers/categories');
 
 router
   .route('/')
-  .post(createCategory)
-  .get(getCategories);
-
-  router
-    .route('/:type')
-    .get(getCategories);
+  .post(auth, requireAuth, createCategory)
+  .get(auth, getAllCategories);
 
 router
   .route('/:id')
-  .get(getCategory)
-  .put(updateCategory)
-  .delete(deleteCategory);
+  .get(auth, getSingleCategory)
+  .put(auth, requireAuth, updateCategory)
+  .delete(auth, requireAuth, deleteCategory);
 
-router
-  .route('/0/reorder')
-  .put(reorderCategories);
+router.route('/0/reorder').put(auth, requireAuth, reorderCategories);
 
 module.exports = router;

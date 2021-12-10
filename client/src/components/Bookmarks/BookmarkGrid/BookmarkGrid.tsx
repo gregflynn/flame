@@ -1,56 +1,72 @@
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { Bookmark, Category } from '../../../interfaces';
-import BookmarkCard from '../BookmarkCard/BookmarkCard';
+import { Category } from '../../../interfaces';
+import { State } from '../../../store/reducers';
+import { Message } from '../../UI';
+import { BookmarkCard } from '../BookmarkCard/BookmarkCard';
 import classes from './BookmarkGrid.module.css';
 
-interface ComponentProps {
+interface Props {
   categories: Category[];
-  bookmarks: Bookmark[];
   totalCategories?: number;
   searching: boolean;
+  fromHomepage?: boolean;
 }
 
-const BookmarkGrid = (props: ComponentProps): JSX.Element => {
+export const BookmarkGrid = (props: Props): JSX.Element => {
+  const {
+    categories,
+    totalCategories,
+    searching,
+    fromHomepage = false,
+  } = props;
+
+  const {
+    config: { config }
+  } = useSelector((state: State) => state);
+
+  const shouldBeShown = (category: Category) => {
+    return !config.hideEmptyCategories || category.bookmarks.length > 0 || !fromHomepage
+  }
+
   let bookmarks: JSX.Element;
 
-  if (props.categories.length > 0) {
-    if (props.searching && props.categories[0].bookmarks.length === 0) {
-      bookmarks = (
-        <p className={classes.BookmarksMessage}>
-          No bookmarks match your search criteria
-        </p>
-      );
+  if (categories.length && categories.some(shouldBeShown)) {
+    if (searching && !categories[0].bookmarks.length) {
+      bookmarks = <Message>No bookmarks match your search criteria</Message>;
     } else {
       bookmarks = (
         <div className={classes.BookmarkGrid}>
-          {props.categories.map(
+          {categories.filter(shouldBeShown).map(
             (category: Category): JSX.Element => (
-              <BookmarkCard key={category.id} category={category} bookmarks={props.bookmarks.filter( (bookmark: Bookmark) => bookmark.categoryId === category.id)} />
+              <BookmarkCard
+                category={category}
+                fromHomepage={fromHomepage}
+                key={category.id}
+              />
             )
           )}
         </div>
       );
     }
   } else {
-    if (props.totalCategories) {
+    if (totalCategories && !config.hideEmptyCategories) {
       bookmarks = (
-        <p className={classes.BookmarksMessage}>
-          There are no pinned bookmark categories. You can pin them from the{' '}
+        <Message>
+          There are no pinned categories. You can pin them from the{' '}
           <Link to="/bookmarks">/bookmarks</Link> menu
-        </p>
+        </Message>
       );
     } else {
       bookmarks = (
-        <p className={classes.BookmarksMessage}>
+        <Message>
           You don't have any bookmarks. You can add a new one from{' '}
           <Link to="/bookmarks">/bookmarks</Link> menu
-        </p>
+        </Message>
       );
     }
   }
 
   return bookmarks;
 };
-
-export default BookmarkGrid;

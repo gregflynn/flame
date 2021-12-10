@@ -1,78 +1,63 @@
 // React
 import { useState, useEffect, FormEvent, ChangeEvent, Fragment } from 'react';
-import { connect } from 'react-redux';
-
-// State
-import { createNotification, updateConfig } from '../../../store/actions';
+import { useDispatch, useSelector } from 'react-redux';
 
 // Typescript
-import {
-  GlobalState,
-  NewNotification,
-  Query,
-  SearchForm,
-} from '../../../interfaces';
+import { Query, SearchForm } from '../../../interfaces';
 
 // Components
-import CustomQueries from './CustomQueries/CustomQueries';
+import { CustomQueries } from './CustomQueries/CustomQueries';
 
 // UI
-import Button from '../../UI/Buttons/Button/Button';
-import SettingsHeadline from '../../UI/Headlines/SettingsHeadline/SettingsHeadline';
-import InputGroup from '../../UI/Forms/InputGroup/InputGroup';
+import { Button, SettingsHeadline, InputGroup } from '../../UI';
 
 // Utils
-import { searchConfig } from '../../../utility';
+import { inputHandler, searchSettingsTemplate } from '../../../utility';
 
 // Data
 import { queries } from '../../../utility/searchQueries.json';
 
-interface Props {
-  createNotification: (notification: NewNotification) => void;
-  updateConfig: (formData: SearchForm) => void;
-  loading: boolean;
-  customQueries: Query[];
-}
+// Redux
+import { State } from '../../../store/reducers';
+import { bindActionCreators } from 'redux';
+import { actionCreators } from '../../../store';
 
-const SearchSettings = (props: Props): JSX.Element => {
+export const SearchSettings = (): JSX.Element => {
+  const { loading, customQueries, config } = useSelector(
+    (state: State) => state.config
+  );
+
+  const dispatch = useDispatch();
+  const { updateConfig } = bindActionCreators(actionCreators, dispatch);
+
   // Initial state
-  const [formData, setFormData] = useState<SearchForm>({
-    hideSearch: 0,
-    defaultSearchProvider: 'l',
-    searchSameTab: 0,
-  });
+  const [formData, setFormData] = useState<SearchForm>(searchSettingsTemplate);
 
   // Get config
   useEffect(() => {
     setFormData({
-      hideSearch: searchConfig('hideSearch', 0),
-      defaultSearchProvider: searchConfig('defaultSearchProvider', 'l'),
-      searchSameTab: searchConfig('searchSameTab', 0),
+      ...config,
     });
-  }, [props.loading]);
+  }, [loading]);
 
   // Form handler
   const formSubmitHandler = async (e: FormEvent) => {
     e.preventDefault();
 
     // Save settings
-    await props.updateConfig(formData);
+    await updateConfig(formData);
   };
 
   // Input handler
   const inputChangeHandler = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-    isNumber?: boolean
+    options?: { isNumber?: boolean; isBool?: boolean }
   ) => {
-    let value: string | number = e.target.value;
-
-    if (isNumber) {
-      value = parseFloat(value);
-    }
-
-    setFormData({
-      ...formData,
-      [e.target.name]: value,
+    inputHandler<SearchForm>({
+      e,
+      options,
+      setStateHandler: setFormData,
+      state: formData,
     });
   };
 
@@ -85,14 +70,14 @@ const SearchSettings = (props: Props): JSX.Element => {
       >
         <SettingsHeadline text="General" />
         <InputGroup>
-          <label htmlFor="defaultSearchProvider">Default Search Provider</label>
+          <label htmlFor="defaultSearchProvider">Default search provider</label>
           <select
             id="defaultSearchProvider"
             name="defaultSearchProvider"
             value={formData.defaultSearchProvider}
             onChange={(e) => inputChangeHandler(e)}
           >
-            {[...queries, ...props.customQueries].map((query: Query, idx) => {
+            {[...queries, ...customQueries].map((query: Query, idx) => {
               const isCustom = idx >= queries.length;
 
               return (
@@ -103,6 +88,7 @@ const SearchSettings = (props: Props): JSX.Element => {
             })}
           </select>
         </InputGroup>
+
         <InputGroup>
           <label htmlFor="searchSameTab">
             Open search results in the same tab
@@ -110,25 +96,40 @@ const SearchSettings = (props: Props): JSX.Element => {
           <select
             id="searchSameTab"
             name="searchSameTab"
-            value={formData.searchSameTab}
-            onChange={(e) => inputChangeHandler(e, true)}
+            value={formData.searchSameTab ? 1 : 0}
+            onChange={(e) => inputChangeHandler(e, { isBool: true })}
           >
             <option value={1}>True</option>
             <option value={0}>False</option>
           </select>
         </InputGroup>
+
         <InputGroup>
           <label htmlFor="hideSearch">Hide search bar</label>
           <select
             id="hideSearch"
             name="hideSearch"
-            value={formData.hideSearch}
-            onChange={(e) => inputChangeHandler(e, true)}
+            value={formData.hideSearch ? 1 : 0}
+            onChange={(e) => inputChangeHandler(e, { isBool: true })}
           >
             <option value={1}>True</option>
             <option value={0}>False</option>
           </select>
         </InputGroup>
+
+        <InputGroup>
+          <label htmlFor="disableAutofocus">Disable search bar autofocus</label>
+          <select
+            id="disableAutofocus"
+            name="disableAutofocus"
+            value={formData.disableAutofocus ? 1 : 0}
+            onChange={(e) => inputChangeHandler(e, { isBool: true })}
+          >
+            <option value={1}>True</option>
+            <option value={0}>False</option>
+          </select>
+        </InputGroup>
+
         <Button>Save changes</Button>
       </form>
 
@@ -138,17 +139,3 @@ const SearchSettings = (props: Props): JSX.Element => {
     </Fragment>
   );
 };
-
-const mapStateToProps = (state: GlobalState) => {
-  return {
-    loading: state.config.loading,
-    customQueries: state.config.customQueries,
-  };
-};
-
-const actions = {
-  createNotification,
-  updateConfig,
-};
-
-export default connect(mapStateToProps, actions)(SearchSettings);

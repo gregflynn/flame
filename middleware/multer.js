@@ -11,10 +11,10 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + '--' + file.originalname);
-  }
+  },
 });
 
-const supportedTypes = ['jpg', 'jpeg', 'png', 'svg', 'svg+xml'];
+const supportedTypes = ['jpg', 'jpeg', 'png', 'svg', 'svg+xml', 'x-icon'];
 
 const fileFilter = (req, file, cb) => {
   if (supportedTypes.includes(file.mimetype.split('/')[1])) {

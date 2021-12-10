@@ -1,9 +1,11 @@
 const initConfig = require('./initConfig');
 const initFiles = require('./initFiles');
+const initDockerSecrets = require('./initDockerSecrets');
 
 const initApp = async () => {
-  await initConfig();
+  initDockerSecrets();
   await initFiles();
+  await initConfig();
 };
 
 module.exports = initApp;

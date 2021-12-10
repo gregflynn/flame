@@ -1,29 +1,29 @@
 const express = require('express');
 const router = express.Router();
-const upload = require('../middleware/multer');
+
+// middleware
+const { upload, auth, requireAuth } = require('../middleware');
 
 const {
   createBookmark,
-  getBookmarks,
-  getBookmark,
+  getAllBookmarks,
+  getSingleBookmark,
   updateBookmark,
   deleteBookmark,
-  reorderBookmarks
-} = require('../controllers/bookmark');
+  reorderBookmarks,
+} = require('../controllers/bookmarks');
 
 router
   .route('/')
-  .post(upload, createBookmark)
-  .get(getBookmarks);
+  .post(auth, requireAuth, upload, createBookmark)
+  .get(auth, getAllBookmarks);
 
 router
   .route('/:id')
-  .get(getBookmark)
-  .put(upload, updateBookmark)
-  .delete(deleteBookmark);
+  .get(auth, getSingleBookmark)
+  .put(auth, requireAuth, upload, updateBookmark)
+  .delete(auth, requireAuth, deleteBookmark);
 
-router
-  .route('/0/reorder')
-  .put(reorderBookmarks);
+router.route('/0/reorder').put(auth, requireAuth, reorderBookmarks);
 
 module.exports = router;

@@ -13,6 +13,7 @@ const Sockets = require('./Sockets');
 
 // Utils
 const initApp = require('./utils/init');
+const initIntegrationsApps = require('./utils/init/initIntegrationsApps');
 const Logger = require('./utils/Logger');
 const logger = new Logger();
 
@@ -20,9 +21,12 @@ const logger = new Logger();
   const PORT = process.env.PORT || 5005;
 
   // Init app
-  await connectDB();
-  await associateModels();
   await initApp();
+  await connectDB();
+  await associateModels();  
+
+  // Load apps to create/update apps from integrations (Docker, Kubernetes, etc.)
+  await initIntegrationsApps();
 
   // Create server for Express API and WebSockets
   const server = http.createServer();
