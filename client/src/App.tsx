@@ -1,24 +1,24 @@
-import { useEffect } from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import 'external-svg-loader';
 
-// Redux
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
-import { autoLogin, getConfig } from './store/action-creators';
-import { actionCreators, store } from './store';
-import { State } from './store/reducers';
 
-// Utils
+import { Apps } from './components/Apps/Apps';
+import { Bookmarks } from './components/Bookmarks/Bookmarks';
+import { Home } from './components/Home/Home';
+import { NotificationCenter } from './components/NotificationCenter/NotificationCenter';
+import { Settings } from './components/Settings/Settings';
+import NotFound from './NotFound';
+import { actionCreators, store } from './store';
+import { autoLogin, getConfig } from './store/action-creators';
+import { State } from './store/reducers';
 import { checkVersion, decodeToken } from './utility';
 
+// Redux
+// Utils
 // Routes
-import { Home } from './components/Home/Home';
-import { Apps } from './components/Apps/Apps';
-import { Settings } from './components/Settings/Settings';
-import { Bookmarks } from './components/Bookmarks/Bookmarks';
-import { NotificationCenter } from './components/NotificationCenter/NotificationCenter';
-
 // Get config
 store.dispatch<any>(getConfig());
 
@@ -80,6 +80,7 @@ export const App = (): JSX.Element => {
           <Route path="/settings" component={Settings} />
           <Route path="/applications" component={Apps} />
           <Route path="/bookmarks" component={Bookmarks} />
+          <Route component={NotFound} />
         </Switch>
       </BrowserRouter>
       <NotificationCenter />
