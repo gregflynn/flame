@@ -55,14 +55,14 @@ export const AppGrid = (props: Props): JSX.Element => {
       apps = (
         <Message>
           There are no pinned categories. You can pin them from the{' '}
-          <Link to="/apps">/apps</Link> menu
+          <Link to="/applications">/applications</Link> menu
         </Message>
       );
     } else {
       apps = (
         <Message>
           You don't have any apps. You can add a new one from{' '}
-          <Link to="/apps">/apps</Link> menu
+          <Link to="/applications">/applications</Link> menu
         </Message>
       );
     }
