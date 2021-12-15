@@ -27,20 +27,20 @@ Flame is self-hosted startpage for your server. Its design is inspired (heavily)
 [Docker Hub link](https://hub.docker.com/r/pawelmalak/flame)
 
 ```sh
-docker pull pawelmalak/flame
+docker pull ghcr.io/fdarveau/flame:latest
 
 # for ARM architecture (e.g. RaspberryPi)
-docker pull pawelmalak/flame:multiarch
+docker pull ghcr.io/fdarveau/flame:latest:multiarch
 
 # installing specific version
-docker pull pawelmalak/flame:2.0.0
+docker pull ghcr.io/fdarveau/flame:latest:2021-12-12
 ```
 
 #### Deployment
 
 ```sh
 # run container
-docker run -p 5005:5005 -v /path/to/data:/app/data -e PASSWORD=flame_password flame
+docker run -p 5005:5005 -v /path/to/data:/app/data -e PASSWORD=flame_password ghcr.io/fdarveau/flame:latest
 ```
 
 #### Building images
@@ -64,7 +64,7 @@ version: '3.6'
 
 services:
   flame:
-    image: pawelmalak/flame
+    image: ghcr.io/fdarveau/flame:latest
     container_name: flame
     volumes:
       - /path/to/host/data:/app/data
