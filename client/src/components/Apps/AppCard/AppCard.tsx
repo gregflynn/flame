@@ -92,7 +92,7 @@ export const AppCard = (props: Props): JSX.Element => {
               {app.icon && iconEl}              
               <div className={classes.AppCardDetails}>
                   <h5>{app.name}</h5>
-                  <span>{displayUrl}</span>
+                  <span>{!app.description.length ? displayUrl : app.description}</span>
                 </div>
             </a>
           );

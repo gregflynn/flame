@@ -10,6 +10,10 @@
   text-transform: uppercase;
 }
 
+.AppHeader:hover {
+  cursor: pointer;
+}
+
 .AppIcon {
   width: 35px;
   height: 35px;

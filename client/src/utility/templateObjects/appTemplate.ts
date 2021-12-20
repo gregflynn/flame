@@ -6,6 +6,7 @@ export const newAppTemplate: NewApp = {
   icon: '',
   categoryId: -1,
   isPublic: true,
+  description: '',
 };
 
 export const appTemplate: App = {

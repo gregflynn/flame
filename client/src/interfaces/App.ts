@@ -6,6 +6,7 @@ export interface NewApp {
   categoryId: number;
   icon: string;
   isPublic: boolean;
+  description: string;
 }
 
 export interface App extends Model, NewApp {

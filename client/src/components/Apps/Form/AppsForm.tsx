@@ -143,7 +143,7 @@ export const AppsForm = ({
     <ModalForm modalHandler={modalHandler} formHandler={formSubmitHandler}>
       {/* NAME */}
       <InputGroup>
-        <label htmlFor="name">App Name</label>
+        <label htmlFor="name">App name</label>
         <input
           type="text"
           name="name"
@@ -189,12 +189,28 @@ export const AppsForm = ({
           })}
         </select>
       </InputGroup>
+      
+      {/* DESCRIPTION */}
+      <InputGroup>
+        <label htmlFor="description">App description</label>
+        <input
+          type="text"
+          name="description"
+          id="description"
+          placeholder="My self-hosted app"
+          value={formData.description}
+          onChange={(e) => inputChangeHandler(e)}
+        />
+        <span>
+          Optional - If description is not set, app URL will be displayed
+        </span>
+      </InputGroup>
 
       {/* ICON */}
       {!useCustomIcon ? (
         // mdi
         <InputGroup>
-          <label htmlFor="icon">App Icon (optional)</label>
+          <label htmlFor="icon">App icon</label>
           <input
             type="text"
             name="icon"
