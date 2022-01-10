@@ -59,9 +59,8 @@ export const Home = (): JSX.Element => {
       appCategory.apps = appCategories
         .map(({ apps }) => apps)
         .flat()
-        .filter(({ name, url }) =>
-          new RegExp(escapeRegex(localSearch), 'i').test(name) || 
-          new RegExp(escapeRegex(localSearch), 'i').test(url)
+        .filter(({ name, url, description }) =>
+          new RegExp(escapeRegex(localSearch), 'i').test(`${name} ${url} ${description}`)
         );
 
         setAppSearchResult([appCategory]);
@@ -74,8 +73,7 @@ export const Home = (): JSX.Element => {
         .map(({ bookmarks }) => bookmarks)
         .flat()
         .filter(({ name, url }) =>
-          new RegExp(escapeRegex(localSearch), 'i').test(name) || 
-          new RegExp(escapeRegex(localSearch), 'i').test(url)
+          new RegExp(escapeRegex(localSearch), 'i').test(`${name} ${url}`)
         );
 
       setBookmarkSearchResult([bookmarkCategory]);

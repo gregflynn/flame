@@ -24,6 +24,7 @@ const logger = new Logger();
   await initApp();
   await connectDB();
   await associateModels();  
+  await jobs();
 
   // Load apps to create/update apps from integrations (Docker, Kubernetes, etc.)
   await initIntegrationsApps();
