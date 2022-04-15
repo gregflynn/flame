@@ -40,7 +40,7 @@ export const CategoryTable = ({ openFormForUpdating }: Props): JSX.Element => {
   }, [categories]);
 
   // Drag and drop handler
-  const dragEndHanlder = (result: DropResult): void => {
+  const dragEndHandler = (result: DropResult): void => {
     if (config.useOrdering !== 'orderId') {
       createNotification({
         title: 'Error',
@@ -95,12 +95,12 @@ export const CategoryTable = ({ openFormForUpdating }: Props): JSX.Element => {
         ) : (
           <p>
             Custom order is disabled. You can change it in the{' '}
-            <Link to="/settings/interface">settings</Link>
+            <Link to="/settings/general">settings</Link>
           </p>
         )}
       </Message>
 
-      <DragDropContext onDragEnd={dragEndHanlder}>
+      <DragDropContext onDragEnd={dragEndHandler}>
         <Droppable droppableId="categories">
           {(provided) => (
             <Table

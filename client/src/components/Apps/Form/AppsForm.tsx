@@ -26,7 +26,7 @@ export const AppsForm = ({
   const { categories } = useSelector((state: State) => state.apps);
 
   const dispatch = useDispatch();
-  const { addApp, updateApp, createNotification } =
+  const { addApp, updateApp, setEditApp, createNotification } =
     bindActionCreators(actionCreators, dispatch);
 
   const [useCustomIcon, toggleUseCustomIcon] = useState<boolean>(false);
@@ -65,12 +65,25 @@ export const AppsForm = ({
   const formSubmitHandler = (e: FormEvent): void => {
     e.preventDefault();
 
+    for (let field of ['name', 'url', 'icon'] as const) {
+      if (/^ +$/.test(formData[field])) {
+        createNotification({
+          title: 'Error',
+          message: `Field cannot be empty: ${field}`,
+        });
+
+        return;
+      }
+    }
+
     const createFormData = (): FormData => {
       const data = new FormData();
       if (customIcon) {
         data.append('icon', customIcon);
       }
+
       data.append('name', formData.name);
+      data.append('description', formData.description);
       data.append('url', formData.url);
       data.append('categoryId', `${formData.categoryId}`);
       data.append('isPublic', `${formData.isPublic ? 1 : 0}`);

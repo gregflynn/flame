@@ -8,31 +8,32 @@ export interface WeatherForm {
   weatherData: WeatherData;
 }
 
-export interface SearchForm {
-  hideSearch: boolean;
+export interface GeneralForm {
   defaultSearchProvider: string;
+  secondarySearchProvider: string;
   searchSameTab: boolean;
-  disableAutofocus: boolean;
-}
-
-export interface OtherSettingsForm {
-  customTitle: string;
   pinAppsByDefault: boolean;
   pinBookmarksByDefault: boolean;
   pinCategoriesByDefault: boolean;
+  useOrdering: string;
+  appsSameTab: boolean;
+  bookmarksSameTab: boolean;
+}
+
+export interface UISettingsForm {
+  customTitle: string;
   hideHeader: boolean;
   hideApps: boolean;
   hideBookmarks: boolean;
   hideEmptyCategories: boolean;
-  useOrdering: string;
-  appsSameTab: boolean;
-  bookmarksSameTab: boolean;
   useAmericanDate: boolean;
   greetingsSchema: string;
   daySchema: string;
   monthSchema: string;
   showTime: boolean;
   hideDate: boolean;
+  hideSearch: boolean;
+  disableAutofocus: boolean;
 }
 
 export interface DockerSettingsForm {

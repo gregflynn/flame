@@ -1,25 +1,18 @@
-import { useState, useEffect, Fragment } from 'react';
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult,
-} from 'react-beautiful-dnd';
+import { Fragment, useEffect, useState } from 'react';
+import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
+
+import { Bookmark, Category } from '../../../interfaces';
+import { actionCreators } from '../../../store';
+import { State } from '../../../store/reducers';
+import { TableActions } from '../../Actions/TableActions';
+import { Message, Table } from '../../UI';
 
 // Redux
-import { useDispatch, useSelector } from 'react-redux';
-import { State } from '../../../store/reducers';
-import { bindActionCreators } from 'redux';
-import { actionCreators } from '../../../store';
-
 // Typescript
-import { Bookmark, Category } from '../../../interfaces';
-
 // UI
-import { Message, Table } from '../../UI';
-import { TableActions } from '../../Actions/TableActions';
-
 interface Props {
   openFormForUpdating: (data: Category | Bookmark) => void;
 }
@@ -47,7 +40,7 @@ export const CategoryTable = ({ openFormForUpdating }: Props): JSX.Element => {
   }, [categories]);
 
   // Drag and drop handler
-  const dragEndHanlder = (result: DropResult): void => {
+  const dragEndHandler = (result: DropResult): void => {
     if (config.useOrdering !== 'orderId') {
       createNotification({
         title: 'Error',
@@ -102,12 +95,12 @@ export const CategoryTable = ({ openFormForUpdating }: Props): JSX.Element => {
         ) : (
           <p>
             Custom order is disabled. You can change it in the{' '}
-            <Link to="/settings/interface">settings</Link>
+            <Link to="/settings/general">settings</Link>
           </p>
         )}
       </Message>
 
-      <DragDropContext onDragEnd={dragEndHanlder}>
+      <DragDropContext onDragEnd={dragEndHandler}>
         <Droppable droppableId="categories">
           {(provided) => (
             <Table

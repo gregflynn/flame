@@ -52,7 +52,7 @@ export const Home = (): JSX.Element => {
         ),
       ]);
 
-      // Search through bookmarks
+      // Search through apps
       const appCategory = { ...appCategories[0] };
 
       appCategory.name = 'Search Results';

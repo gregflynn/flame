@@ -7,6 +7,7 @@ export interface CategoriesState {
   loading: boolean;
   errors: string | undefined;
   categories: Category[];
+  categoryInEdit: Category | null;
   type: string;
 }
 

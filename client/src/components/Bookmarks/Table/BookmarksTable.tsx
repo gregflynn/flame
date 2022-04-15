@@ -1,25 +1,18 @@
-import { useState, useEffect, Fragment } from 'react';
-import {
-  DragDropContext,
-  Droppable,
-  Draggable,
-  DropResult,
-} from 'react-beautiful-dnd';
+import { Fragment, useEffect, useState } from 'react';
+import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd';
+import { useDispatch, useSelector } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+import { Bookmark, Category } from '../../../interfaces';
+import { actionCreators } from '../../../store';
+import { State } from '../../../store/reducers';
+import { bookmarkTemplate } from '../../../utility';
+import { TableActions } from '../../Actions/TableActions';
+import { Message, Table } from '../../UI';
 
 // Redux
-import { useDispatch, useSelector } from 'react-redux';
-import { State } from '../../../store/reducers';
-import { bindActionCreators } from 'redux';
-import { actionCreators } from '../../../store';
-
 // Typescript
-import { Bookmark, Category } from '../../../interfaces';
-
 // UI
-import { Message, Table } from '../../UI';
-import { TableActions } from '../../Actions/TableActions';
-import { bookmarkTemplate } from '../../../utility';
-
 interface Props {
   openFormForUpdating: (data: Category | Bookmark) => void;
 }
@@ -48,7 +41,7 @@ export const BookmarksTable = ({ openFormForUpdating }: Props): JSX.Element => {
   }, [categoryInEdit]);
 
   // Drag and drop handler
-  const dragEndHanlder = (result: DropResult): void => {
+  const dragEndHandler = (result: DropResult): void => {
     if (config.useOrdering !== 'orderId') {
       createNotification({
         title: 'Error',
@@ -116,7 +109,7 @@ export const BookmarksTable = ({ openFormForUpdating }: Props): JSX.Element => {
       )}
 
       {categoryInEdit && (
-        <DragDropContext onDragEnd={dragEndHanlder}>
+        <DragDropContext onDragEnd={dragEndHandler}>
           <Droppable droppableId="bookmarks">
             {(provided) => (
               <Table

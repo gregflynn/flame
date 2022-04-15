@@ -1,12 +1,10 @@
-import { App, Category } from '../../interfaces';
+import { App } from '../../interfaces';
 import { sortData } from '../../utility';
 import { ActionType } from '../action-types';
 import { Action } from '../actions';
 import { categoriesReducer, CategoriesState } from './category';
 
 interface AppsState extends CategoriesState {
-  categories: Category[];
-  categoryInEdit: Category | null;
   appInEdit: App | null;
 }
 

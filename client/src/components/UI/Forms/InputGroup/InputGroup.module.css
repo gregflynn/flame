@@ -23,7 +23,7 @@
 
 .InputGroup span {
   font-size: 12px;
-  color: var(--color-primary)
+  color: var(--color-primary);
 }
 
 .InputGroup span a {
@@ -37,4 +37,8 @@
 .InputGroup textarea {
   resize: none;
   height: 50vh;
+}
+
+.InputGroup input[type='color'] {
+  all: unset;
 }

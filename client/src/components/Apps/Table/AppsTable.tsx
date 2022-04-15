@@ -41,7 +41,7 @@ export const AppsTable = ({ openFormForUpdating }: Props): JSX.Element => {
   }, [categoryInEdit]);
 
   // Drag and drop handler
-  const dragEndHanlder = (result: DropResult): void => {
+  const dragEndHandler = (result: DropResult): void => {
     if (config.useOrdering !== 'orderId') {
       createNotification({
         title: 'Error',
@@ -109,7 +109,7 @@ export const AppsTable = ({ openFormForUpdating }: Props): JSX.Element => {
       )}
 
       {categoryInEdit && (
-        <DragDropContext onDragEnd={dragEndHanlder}>
+        <DragDropContext onDragEnd={dragEndHandler}>
           <Droppable droppableId="apps">
             {(provided) => (
               <Table

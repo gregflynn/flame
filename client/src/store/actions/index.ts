@@ -35,11 +35,23 @@ import {
   UpdateQueryAction,
 } from './config';
 import { ClearNotificationAction, CreateNotificationAction } from './notification';
-import { SetThemeAction } from './theme';
+import {
+  AddThemeAction,
+  DeleteThemeAction,
+  EditThemeAction,
+  FetchThemesAction,
+  SetThemeAction,
+  UpdateThemeAction,
+} from './theme';
 
 export type Action =
   // Theme
   | SetThemeAction
+  | FetchThemesAction
+  | AddThemeAction
+  | DeleteThemeAction
+  | UpdateThemeAction
+  | EditThemeAction
   // Config
   | GetConfigAction
   | UpdateConfigAction
