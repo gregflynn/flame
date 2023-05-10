@@ -5,7 +5,7 @@ export const newAppTemplate: NewApp = {
   url: '',
   icon: '',
   categoryId: -1,
-  isPublic: true,
+  isPublic: false,
   description: '',
 };
 

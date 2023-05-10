@@ -3,7 +3,7 @@ import { Category, NewCategory } from '../../interfaces';
 export const newBookmarkCategoryTemplate: NewCategory = {
   name: '',
   type: 'bookmarks',
-  isPublic: true,
+  isPublic: false,
 };
 
 export const bookmarkCategoryTemplate: Category = {
@@ -20,7 +20,7 @@ export const bookmarkCategoryTemplate: Category = {
 export const newAppCategoryTemplate: NewCategory = {
   name: '',
   type: 'apps',
-  isPublic: true,
+  isPublic: false,
 };
 
 export const appCategoryTemplate: Category = {
