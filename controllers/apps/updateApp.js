@@ -1,5 +1,6 @@
 const asyncWrapper = require('../../middleware/asyncWrapper');
 const App = require('../../models/App');
+const downloadIcon = require('../../utils/downloadIcon');
 
 // @desc      Update app
 // @route     PUT /api/apps/:id
@@ -26,6 +27,11 @@ const updateApp = asyncWrapper(async (req, res, next) => {
 
   if (req.file) {
     body.icon = req.file.filename;
+  }
+
+  if (!body.icon) {
+    // download that bad boi
+    body.icon = await downloadIcon(body.url);
   }
 
   app = await app.update(body);
