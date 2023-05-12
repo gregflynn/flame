@@ -27,6 +27,7 @@ const downloadImg = async (prefix, url) => {
 const downloadIcon = async (bookmarkUrl) => {
   const grab = await grabFavicon(bookmarkUrl);
   let icons = grab.icons;
+  if (!icons) return "";
 
   if (icons.length > 0) {
     // sort so idx 0 is the highest resolution available
