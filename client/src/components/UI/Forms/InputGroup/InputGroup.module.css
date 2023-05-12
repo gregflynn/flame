@@ -41,4 +41,6 @@
 
 .InputGroup input[type='color'] {
   all: unset;
+  width: 200px;
+  height: 26px;
 }
