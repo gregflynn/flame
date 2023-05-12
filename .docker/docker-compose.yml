@@ -2,7 +2,7 @@ version: '3.6'
 
 services:
   flame:
-    image: ghcr.io/fdarveau/flame:latest
+    image: ghcr.io/gregflynn/flame:latest
     container_name: flame
     volumes:
       - /path/to/host/data:/app/data
