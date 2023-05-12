@@ -2,23 +2,19 @@
 
 ![Homescreen screenshot](.github/home.png)
 
-## Important update 2021-12-10
-Due to prolonged inactivity on my end and multiple conflicting changes with the original repository, I applied app categories from scratch using the original repository's code. **This means there are some breaking changes, the biggest one being the database**. The database schemas of the old version and the new one are incompatible. You will need to delete/rename the previous database file so Flame can re-create it. You can then add your apps/bookmarks manually.
-
-If you encounter any problem, you can open an Issue in this fork so I can look into it.
-
 ## Description
 
 Flame is self-hosted startpage for your server. Its design is inspired (heavily) by [SUI](https://github.com/jeroenpardon/sui). Flame is very easy to setup and use. With built-in editors, it allows you to setup your very own application hub in no time - no file editing necessary.
 
 ## Functionality
 - 📝 Create, update, delete your applications and bookmarks directly from the app using built-in GUI editors
-- 📌 Pin your favourite items to the homescreen for quick and easy access
+- 📌 Pin your favorite items to the homescreen for quick and easy access
 - 🔍 Integrated search bar with local filtering, 11 web search providers and ability to add your own
 - 🔑 Authentication system to protect your settings, apps and bookmarks
 - 🔨 Dozens of options to customize Flame interface to your needs, including support for custom CSS, 15 built-in color themes and custom theme builder
 - ☀️ Weather widget with current temperature, cloud coverage and animated weather status
 - 🐳 Docker integration to automatically pick and add apps based on their labels
+- Automatic icon downloading for bookmarks
 
 ## Installation
 
