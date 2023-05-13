@@ -9,7 +9,7 @@ const updateWeather = asyncWrapper(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    data: weather,
+    data: {},
   });
 });
 
