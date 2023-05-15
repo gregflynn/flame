@@ -9,7 +9,6 @@ import { State } from '../../store/reducers';
 import { escapeRegex } from '../../utility';
 import { AppGrid } from '../Apps/AppGrid/AppGrid';
 import { BookmarkGrid } from '../Bookmarks/BookmarkGrid/BookmarkGrid';
-import { SearchBar } from '../SearchBar/SearchBar';
 import { Icon, Message, SectionHeadline, Spinner } from '../UI';
 import { Container } from '../UI/Layout/Layout';
 import { Header } from './Header/Header';
@@ -85,17 +84,9 @@ export const Home = (): JSX.Element => {
 
   return (
     <Container>
-      {!config.hideSearch ? (
-        <SearchBar
-          setLocalSearch={setLocalSearch}
-          appSearchResult={appSearchResult}
-          bookmarkSearchResult={bookmarkSearchResult}
-        />
-      ) : (
-        <div></div>
+      {!config.hideHeader && (
+        <Header bookmarkSearchResult={bookmarkSearchResult} appSearchResult={appSearchResult} setLocalSearch={setLocalSearch} />
       )}
-
-      <Header />
 
       {!isAuthenticated &&
       !appCategories.some((a) => a.isPinned) &&

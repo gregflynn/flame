@@ -1,6 +1,7 @@
 .WeatherWidget {
   display: flex;
   visibility: hidden;
+  margin: 0 1em;
 }
 
 .WeatherDetails {

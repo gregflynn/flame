@@ -1,17 +1,27 @@
+.SearchContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 .SearchBar {
   width: 100%;
   padding: 10px 0;
   color: var(--color-primary);
-  /* font-size: 20px; */
-  margin-bottom: 20px;
   background-color: transparent;
   border: none;
   border-bottom: 2px solid var(--color-accent);
   opacity: 0.5;
   transition: all 0.2s;
+  font-size: 16pt;
 }
 
 .SearchBar:focus {
   opacity: 1;
   outline: none;
+}
+
+.SearchBarIcon {
+  color: var(--color-primary);
+  padding: 0.3em;
 }

@@ -1,33 +1,35 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-
 // Redux
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { Category } from '../../../interfaces';
 import { State } from '../../../store/reducers';
+import { SearchBar } from '../../SearchBar/SearchBar';
+import { greeter } from './functions/greeter';
 
 // CSS
 import classes from './Header.module.css';
 
 // Components
+import { DateTimeWidget } from '../../Widgets/DateTimeWidget/DateTimeWidget';
 import { WeatherWidget } from '../../Widgets/WeatherWidget/WeatherWidget';
 
-// Utils
-import { getDateTime } from './functions/getDateTime';
-import { greeter } from './functions/greeter';
+interface IProps {
+  setLocalSearch: (query: string) => void;
+  appSearchResult: Category[] | null;
+  bookmarkSearchResult: Category[] | null;
+}
 
-export const Header = (): JSX.Element => {
-  const { hideHeader, hideDate, showTime } = useSelector(
+export const Header = (props: IProps): JSX.Element => {
+  const { hideSearch } = useSelector(
     (state: State) => state.config.config
   );
 
-  const [dateTime, setDateTime] = useState<string>(getDateTime());
   const [greeting, setGreeting] = useState<string>(greeter());
 
   useEffect(() => {
     let dateTimeInterval: NodeJS.Timeout;
 
     dateTimeInterval = setInterval(() => {
-      setDateTime(getDateTime());
       setGreeting(greeter());
     }, 1000);
 
@@ -36,18 +38,20 @@ export const Header = (): JSX.Element => {
 
   return (
     <header className={classes.Header}>
-      {(!hideDate || showTime) && <p>{dateTime}</p>}
-
-      <Link to="/settings" className={classes.SettingsLink}>
-        Go to Settings
-      </Link>
-
-      {!hideHeader && (
-        <span className={classes.HeaderMain}>
-          <h1>{greeting}</h1>
-          <WeatherWidget />
-        </span>
+      {!hideSearch && (
+        <SearchBar
+          setLocalSearch={props.setLocalSearch}
+          appSearchResult={props.appSearchResult}
+          bookmarkSearchResult={props.bookmarkSearchResult}
+        />
       )}
+      <div style={{flexGrow: 1}}></div>
+
+      <h1 className={classes.Greeting}>{greeting}</h1>
+
+      <div style={{flexGrow: 1}}></div>
+      <WeatherWidget />
+      <DateTimeWidget />
     </header>
   );
 };

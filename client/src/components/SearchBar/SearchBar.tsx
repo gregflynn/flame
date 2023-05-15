@@ -1,3 +1,5 @@
+import { mdiMagnify } from '@mdi/js';
+import Icon from '@mdi/react';
 import { KeyboardEvent, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -117,6 +119,9 @@ export const SearchBar = (props: Props): JSX.Element => {
 
   return (
     <div className={classes.SearchContainer}>
+      <div className={classes.SearchBarIcon}>
+        <Icon path={mdiMagnify} size={1.5} />
+      </div>
       <input
         ref={inputRef}
         type="text"
