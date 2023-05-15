@@ -30,13 +30,11 @@ export const AppGrid = (props: Props): JSX.Element => {
     return !config.hideEmptyCategories || category.apps.length > 0 || !fromHomepage
   }
 
-  let apps: JSX.Element;
-
-  if (categories.length && categories.some(shouldBeShown)) {
+  if (categories.length && (categories.some(shouldBeShown)) || searching) {
     if (searching && !categories[0].apps.length) {
-      apps = <Message>No apps match your search criteria</Message>;
+      return <Message>No apps match your search criteria</Message>;
     } else {
-      apps = (
+      return (
         <div className={classes.AppGrid}>
         {categories.filter(shouldBeShown).map(
             (category: Category): JSX.Element => (
@@ -52,14 +50,14 @@ export const AppGrid = (props: Props): JSX.Element => {
     }
   } else {
     if (totalCategories && !config.hideEmptyCategories) {
-      apps = (
+      return (
         <Message>
           There are no pinned categories. You can pin them from the{' '}
           <Link to="/applications">/applications</Link> menu
         </Message>
       );
     } else {
-      apps = (
+      return (
         <Message>
           You don't have any apps. You can add a new one from{' '}
           <Link to="/applications">/applications</Link> menu
@@ -67,6 +65,4 @@ export const AppGrid = (props: Props): JSX.Element => {
       );
     }
   }
-
-  return apps;
 };

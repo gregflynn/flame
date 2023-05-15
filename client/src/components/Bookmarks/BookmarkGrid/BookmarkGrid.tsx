@@ -30,13 +30,11 @@ export const BookmarkGrid = (props: Props): JSX.Element => {
     return !config.hideEmptyCategories || category.bookmarks.length > 0 || !fromHomepage
   }
 
-  let bookmarks: JSX.Element;
-
-  if (categories.length && categories.some(shouldBeShown)) {
+  if (categories.length && (categories.some(shouldBeShown)) || searching) {
     if (searching && !categories[0].bookmarks.length) {
-      bookmarks = <Message>No bookmarks match your search criteria</Message>;
+      return <Message>No bookmarks match your search criteria</Message>;
     } else {
-      bookmarks = (
+      return (
         <div className={classes.BookmarkGrid}>
           {categories.filter(shouldBeShown).map(
             (category: Category): JSX.Element => (
@@ -52,14 +50,14 @@ export const BookmarkGrid = (props: Props): JSX.Element => {
     }
   } else {
     if (totalCategories && !config.hideEmptyCategories) {
-      bookmarks = (
+      return (
         <Message>
           There are no pinned categories. You can pin them from the{' '}
           <Link to="/bookmarks">/bookmarks</Link> menu
         </Message>
       );
     } else {
-      bookmarks = (
+      return (
         <Message>
           You don't have any bookmarks. You can add a new one from{' '}
           <Link to="/bookmarks">/bookmarks</Link> menu
@@ -67,6 +65,4 @@ export const BookmarkGrid = (props: Props): JSX.Element => {
       );
     }
   }
-
-  return bookmarks;
 };
