@@ -16,7 +16,7 @@ import NotFound from './NotFound';
 import { actionCreators, store } from './store';
 import { autoLogin, getConfig } from './store/action-creators';
 import { State } from './store/reducers';
-import { checkVersion, decodeToken, parsePABToTheme } from './utility';
+import { checkVersion, parsePABToTheme } from './utility';
 
 // Redux
 // Utils
