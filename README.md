@@ -94,13 +94,6 @@ secrets:
     file: ./secrets/flame_password
 ```
 
-#### Skaffold
-
-```sh
-# use skaffold
-skaffold dev
-```
-
 ### Without Docker
 
 Follow instructions from wiki: [Installation without Docker](https://github.com/pawelmalak/flame/wiki/Installation-without-docker)
