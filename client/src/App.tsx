@@ -1,4 +1,5 @@
 import 'external-svg-loader';
+import jwtDecode from 'jwt-decode';
 
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,6 +11,7 @@ import { Bookmarks } from './components/Bookmarks/Bookmarks';
 import { Home } from './components/Home/Home';
 import { NotificationCenter } from './components/NotificationCenter/NotificationCenter';
 import { Settings } from './components/Settings/Settings';
+import { Token } from './interfaces';
 import NotFound from './NotFound';
 import { actionCreators, store } from './store';
 import { autoLogin, getConfig } from './store/action-creators';
@@ -38,7 +40,8 @@ export const App = (): JSX.Element => {
     // check if token is valid
     const tokenIsValid = setInterval(() => {
       if (localStorage.token) {
-        const expiresIn = decodeToken(localStorage.token).exp * 1000;
+        const decoded = jwtDecode(localStorage.token) as Token;
+        const expiresIn = decoded.exp * 1000;
         const now = new Date().getTime();
 
         if (now > expiresIn) {
