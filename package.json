@@ -11,7 +11,7 @@
     "dev-init": "npm run dir-init && npm run init-server && npm run init-client",
     "dev-server": "nodemon server.js -e js",
     "dev-client": "NODE_OPTIONS=--openssl-legacy-provider npm start --prefix client",
-    "dev": "concurrently \"npm run dev-server\" \"npm run dev-client\"",
+    "dev": "concurrently \"npm run dev-server\" \"npm run dev-client\""
   },
   "author": "",
   "license": "ISC",
