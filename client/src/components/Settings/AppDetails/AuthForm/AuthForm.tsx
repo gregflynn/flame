@@ -5,19 +5,17 @@ import { useSelector, useDispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { actionCreators } from '../../../../store';
 import { State } from '../../../../store/reducers';
-import { decodeToken, parseTokenExpire } from '../../../../utility';
 
 // Other
 import { InputGroup, Button } from '../../../UI';
 import classes from '../AppDetails.module.css';
 
 export const AuthForm = (): JSX.Element => {
-  const { isAuthenticated, token } = useSelector((state: State) => state.auth);
+  const { isAuthenticated } = useSelector((state: State) => state.auth);
 
   const dispatch = useDispatch();
   const { login, logout } = bindActionCreators(actionCreators, dispatch);
 
-  const [tokenExpires, setTokenExpires] = useState('');
   const [formData, setFormData] = useState({
     password: '',
     duration: '14d',
@@ -28,14 +26,6 @@ export const AuthForm = (): JSX.Element => {
   useEffect(() => {
     passwordInputRef.current?.focus();
   }, []);
-
-  useEffect(() => {
-    if (token) {
-      const decoded = decodeToken(token);
-      const expiresIn = parseTokenExpire(decoded.exp);
-      setTokenExpires(expiresIn);
-    }
-  }, [token]);
 
   const formHandler = (e: FormEvent) => {
     e.preventDefault();
@@ -99,8 +89,7 @@ export const AuthForm = (): JSX.Element => {
       ) : (
         <div>
           <p className={classes.text}>
-            You are logged in. Your session will expire{' '}
-            <span>{tokenExpires}</span>
+            You are logged in.
           </p>
           <Button click={logout}>Logout</Button>
         </div>

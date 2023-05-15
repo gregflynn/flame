@@ -24,7 +24,7 @@ export const configTemplate: Config = {
   dockerHost: 'localhost',
   kubernetesApps: false,
   unpinStoppedApps: false,
-  useAmericanDate: false,
+  hideGreeting: false,
   disableAutofocus: false,
   greetingsSchema: 'Good evening!;Good afternoon!;Good morning!;Good night!',
   daySchema: 'Sunday;Monday;Tuesday;Wednesday;Thursday;Friday;Saturday',

@@ -20,7 +20,7 @@ interface IProps {
 }
 
 export const Header = (props: IProps): JSX.Element => {
-  const { hideSearch } = useSelector(
+  const { hideSearch, hideGreeting } = useSelector(
     (state: State) => state.config.config
   );
 
@@ -47,7 +47,9 @@ export const Header = (props: IProps): JSX.Element => {
       )}
       <div style={{flexGrow: 1}}></div>
 
-      <h1 className={classes.Greeting}>{greeting}</h1>
+      {!hideGreeting && (
+        <h1 className={classes.Greeting}>{greeting}</h1>
+      )}
 
       <div style={{flexGrow: 1}}></div>
       <WeatherWidget />

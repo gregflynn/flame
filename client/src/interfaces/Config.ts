@@ -24,7 +24,7 @@ export interface Config {
   dockerHost: string;
   kubernetesApps: boolean;
   unpinStoppedApps: boolean;
-  useAmericanDate: boolean;
+  hideGreeting: boolean;
   disableAutofocus: boolean;
   greetingsSchema: string;
   daySchema: string;

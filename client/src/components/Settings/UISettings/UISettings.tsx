@@ -100,7 +100,7 @@ export const UISettings = (): JSX.Element => {
       {/* HIDE HEADER */}
       <InputGroup>
         <label htmlFor="hideHeader">
-          Hide headline (greetings and weather)
+          Hide headline (greetings, weather, time, and search)
         </label>
         <select
           id="hideHeader"
@@ -141,17 +141,16 @@ export const UISettings = (): JSX.Element => {
         </select>
       </InputGroup>
 
-      {/* DATE FORMAT */}
       <InputGroup>
-        <label htmlFor="useAmericanDate">Date formatting</label>
+        <label htmlFor="hideGreeting">Hide Greeting</label>
         <select
-          id="useAmericanDate"
-          name="useAmericanDate"
-          value={formData.useAmericanDate ? 1 : 0}
+          id="hideGreeting"
+          name="hideGreeting"
+          value={formData.hideGreeting ? 1 : 0}
           onChange={(e) => inputChangeHandler(e, { isBool: true })}
         >
-          <option value={1}>Friday, October 22 2021</option>
-          <option value={0}>Friday, 22 October 2021</option>
+          <option value={0}>False</option>
+          <option value={1}>True</option>
         </select>
       </InputGroup>
 

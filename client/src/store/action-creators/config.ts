@@ -14,7 +14,7 @@ import { storeUIConfig, applyAuth } from '../../utility';
 import { ConfigFormData } from '../../types';
 
 const keys: (keyof Config)[] = [
-  'useAmericanDate',
+  'hideGreeting',
   'greetingsSchema',
   'daySchema',
   'monthSchema',
