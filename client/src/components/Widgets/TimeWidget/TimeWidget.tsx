@@ -5,7 +5,9 @@ import classes from './TimeWidget.module.css';
 
 
 const formatTime = (now: Date): string => {
-  let time = `${parseTime(now.getHours())}:${parseTime(now.getMinutes())}`
+  let hourNum = now.getHours()
+  if (hourNum > 12) hourNum -= 12;
+  let time = `${hourNum}:${parseTime(now.getMinutes())}`
   const showSeconds = localStorage.showSeconds === 'true';
   let seconds = "";
   if (showSeconds) {
