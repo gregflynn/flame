@@ -4,13 +4,14 @@ import { useSelector } from 'react-redux';
 import { Category } from '../../../interfaces';
 import { State } from '../../../store/reducers';
 import { SearchBar } from '../../SearchBar/SearchBar';
+import { DateWidget } from '../../Widgets/DateWidget/DateWidget';
 import { greeter } from './functions/greeter';
 
 // CSS
 import classes from './Header.module.css';
 
 // Components
-import { DateTimeWidget } from '../../Widgets/DateTimeWidget/DateTimeWidget';
+import { TimeWidget } from '../../Widgets/TimeWidget/TimeWidget';
 import { WeatherWidget } from '../../Widgets/WeatherWidget/WeatherWidget';
 
 interface IProps {
@@ -25,6 +26,8 @@ export const Header = (props: IProps): JSX.Element => {
   );
 
   const [greeting, setGreeting] = useState<string>(greeter());
+  const hideDate = localStorage.hideDate === 'true';
+  const showTime = localStorage.showTime === 'true';
 
   useEffect(() => {
     let dateTimeInterval: NodeJS.Timeout;
@@ -53,7 +56,8 @@ export const Header = (props: IProps): JSX.Element => {
 
       <div style={{flexGrow: 1}}></div>
       <WeatherWidget />
-      <DateTimeWidget />
+      {showTime && <TimeWidget />}
+      {!hideDate && <DateWidget/>}
     </header>
   );
 };
