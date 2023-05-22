@@ -5,31 +5,31 @@ import classes from './DateWidget.module.css';
 
 const formatDayName = (now: Date): string => {
   const days = localStorage.getItem('daySchema')?.split(';') || [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
+    'Sun',
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thu',
+    'Fri',
+    'Sat',
   ];
   return days[now.getDay()];
 }
 
 const formatMonth = (now: Date): string => {
   const months = localStorage.getItem('monthSchema')?.split(';') || [
-    'January',
-    'February',
-    'March',
-    'April',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
     'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
   return months[now.getMonth()]
 };

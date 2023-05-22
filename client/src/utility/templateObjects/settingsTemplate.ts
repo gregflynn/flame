@@ -8,9 +8,8 @@ export const uiSettingsTemplate: UISettingsForm = {
   hideEmptyCategories: true,
   hideGreeting: false,
   greetingsSchema: 'Good evening!;Good afternoon!;Good morning!;Good night!',
-  daySchema: 'Sunday;Monday;Tuesday;Wednesday;Thursday;Friday;Saturday',
-  monthSchema:
-    'January;February;March;April;May;June;July;August;September;October;November;December',
+  daySchema: 'Sun;Mon;Tue;Wed;Thu;Fri;Sat',
+  monthSchema: 'Jan;Feb;Mar;Apr;May;Jun;Jul;Aug;Sep;Oct;Nov;Dec',
   showTime: false,
   hideDate: false,
   hideSearch: false,
