@@ -3,12 +3,14 @@
   flex-direction: column;
   border: 1px solid var(--color-accent);
   border-radius: 5px;
+  min-width: 50px;
 }
 
 .DayName {
   background-color: var(--color-accent);
   padding-left: 0.15em;
   padding-right: 0.15em;
+  text-align: center;
 }
 
 .DayNumber {

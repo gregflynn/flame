@@ -5,6 +5,7 @@ import { Category } from '../../../interfaces';
 import { State } from '../../../store/reducers';
 import { SearchBar } from '../../SearchBar/SearchBar';
 import { DateWidget } from '../../Widgets/DateWidget/DateWidget';
+import { ThemeToggleWidget } from '../../Widgets/ThemeToggleWidget/ThemeToggleWidget';
 import { greeter } from './functions/greeter';
 
 // CSS
@@ -58,6 +59,8 @@ export const Header = (props: IProps): JSX.Element => {
       <WeatherWidget />
       {showTime && <TimeWidget />}
       {!hideDate && <DateWidget/>}
+
+      <ThemeToggleWidget/>
     </header>
   );
 };
