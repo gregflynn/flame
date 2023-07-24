@@ -16,7 +16,7 @@ import NotFound from './NotFound';
 import { actionCreators, store } from './store';
 import { autoLogin, getConfig } from './store/action-creators';
 import { State } from './store/reducers';
-import { checkVersion, parsePABToTheme } from './utility';
+import { parsePABToTheme } from './utility';
 
 // Redux
 // Utils
@@ -61,9 +61,6 @@ export const App = (): JSX.Element => {
     if (localStorage.theme) {
       setTheme(parsePABToTheme(localStorage.theme));
     }
-
-    // check for updated
-    checkVersion();
 
     // load custom search queries
     fetchQueries();
